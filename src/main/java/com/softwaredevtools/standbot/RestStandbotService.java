@@ -1,5 +1,7 @@
 package com.softwaredevtools.standbot;
 
+import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
@@ -7,9 +9,15 @@ import javax.ws.rs.core.*;
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 public class RestStandbotService {
+
+    /*
+        will indicate if the plugin is installed
+        will be used by the bot server to know if the add-on is up and running on the Jira server
+     */
     @GET
-    @Path("test")
+    @AnonymousAllowed
+    @Path("healthcheck")
     public Response getUncompletedUsers() {
-        return Response.ok("works!").build();
+        return Response.ok().build();
     }
 }
