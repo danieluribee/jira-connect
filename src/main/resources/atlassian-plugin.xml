@@ -5,6 +5,8 @@
         <vendor name="${project.organization.name}" url="${project.organization.url}"/>
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
+
+        <param name="configure.url">/plugins/servlet//standbot/configure</param>
     </plugin-info>
 
     <!-- add our i18n resource -->
@@ -29,5 +31,9 @@
     <rest key="standbotRest" path="/standbot" version="1.0" class="com.softwaredevtools.standbot.RestStandbotService">
         <description>Provides rest api for standbot.</description>
     </rest>
+
+    <servlet name="Standbot configure" key="standbotconfigurepage" class="com.softwaredevtools.standbot.servlet.ConfigureServlet">
+        <url-pattern>/standbot/configure</url-pattern>
+    </servlet>
 
 </atlassian-plugin>

@@ -1,0 +1,19 @@
+<script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+</script>
+
+<script src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.js" type="application/javascript"></script>
+<script src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.js" type="application/javascript"></script>
+
+<div>
+    <h1>Pantalla de configuracion</h1>
+
+    <div>
+        <input type="text" id="slack-input">.slack.com
+
+        <button onclick="verifyTeam()">Verify team</button>
+    </div>
+</div>
+

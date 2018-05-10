@@ -9,5 +9,9 @@ import net.java.ao.schema.Table;
 public interface SlackIntegrationEntity extends Entity {
     boolean getActive();
 
-    void setActive();
+    void setActive(boolean active);
+
+    String getClientKey();
+
+    void setClientKey(String clientKey);
 }
