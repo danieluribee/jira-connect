@@ -13,6 +13,7 @@ import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
+import com.softwaredevtools.standbot.service.SlackIntegrationService;
 
 @Scanned
 public class ConfigureServlet extends HttpServlet {
@@ -20,12 +21,11 @@ public class ConfigureServlet extends HttpServlet {
     @ComponentImport
     private final TemplateRenderer renderer;
 
-    @ComponentImport
-    private final ActiveObjects ao;
+    private final SlackIntegrationService _slackIntegrationService;
 
     @Inject
-    public ConfigureServlet(TemplateRenderer renderer, ActiveObjects ao) {
-        this.ao = ao;
+    public ConfigureServlet(TemplateRenderer renderer, SlackIntegrationService slackIntegrationService) {
+        _slackIntegrationService = slackIntegrationService;
         this.renderer = renderer;
     }
 
@@ -35,23 +35,22 @@ public class ConfigureServlet extends HttpServlet {
         /*
         try to get the config for slack integration
          */
-        SlackIntegrationEntity[] slackIntegrationEntities = ao.find(SlackIntegrationEntity.class);
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
 
         /*
         this is the first time we see this screen
         we'll generate a new unique id for the jira instance
          */
-        if (slackIntegrationEntities == null || slackIntegrationEntities.length == 0) {
-            SlackIntegrationEntity slackIntegrationEntity = ao.create(SlackIntegrationEntity.class);
-            slackIntegrationEntity.setActive(false);
-
+        if (slackIntegrationEntity == null) {
             UUID uuid = UUID.randomUUID();
             String generatedClientKey = uuid.toString();
 
+            slackIntegrationEntity = _slackIntegrationService.createNew();
+            slackIntegrationEntity.setActive(false);
             slackIntegrationEntity.setClientKey(generatedClientKey);
             slackIntegrationEntity.save();
         } else {
-            System.out.println("Using client key: " + slackIntegrationEntities[0].getClientKey());
+            System.out.println("Using client key: " + slackIntegrationEntity.getClientKey());
         }
 
         response.setContentType("text/html;charset=utf-8");

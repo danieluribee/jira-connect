@@ -28,7 +28,7 @@
         <context>connector</context>
     </web-resource>
 
-    <rest key="standbotRest" path="/standbot" version="1.0" class="com.softwaredevtools.standbot.RestStandbotService">
+    <rest key="standbotRest" path="/standbot" version="1.0" class="com.softwaredevtools.standbot.StandbotController">
         <description>Provides rest api for standbot.</description>
     </rest>
 
