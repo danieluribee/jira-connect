@@ -30,28 +30,12 @@ public class ConfigureServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
-    {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         /*
-        try to get the config for slack integration
+        try to get the config for slack integration or generate a new one if not exists
          */
-        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
-
-        /*
-        this is the first time we see this screen
-        we'll generate a new unique id for the jira instance
-         */
-        if (slackIntegrationEntity == null) {
-            UUID uuid = UUID.randomUUID();
-            String generatedClientKey = uuid.toString();
-
-            slackIntegrationEntity = _slackIntegrationService.createNew();
-            slackIntegrationEntity.setActive(false);
-            slackIntegrationEntity.setClientKey(generatedClientKey);
-            slackIntegrationEntity.save();
-        } else {
-            System.out.println("Using client key: " + slackIntegrationEntity.getClientKey());
-        }
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.generateSlackIntegrationIfNotExists();
+        System.out.println("Using client key: " + slackIntegrationEntity.getClientKey());
 
         response.setContentType("text/html;charset=utf-8");
         renderer.render("templates/admin.vm", response.getWriter());

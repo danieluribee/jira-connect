@@ -6,6 +6,7 @@ import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
 import org.springframework.stereotype.Service;
 import javax.inject.Inject;
+import java.util.UUID;
 
 @Service
 public class SlackIntegrationService {
@@ -46,7 +47,21 @@ public class SlackIntegrationService {
         }
     }
 
-    public SlackIntegrationEntity createNew() {
-        return _ao.create(SlackIntegrationEntity.class);
+    public SlackIntegrationEntity generateSlackIntegrationIfNotExists() {
+        SlackIntegrationEntity slackIntegrationEntity = getSlackIntegration();
+
+        if (slackIntegrationEntity == null) {
+            System.out.println("Generate a new client key for the instance");
+
+            UUID uuid = UUID.randomUUID();
+            String generatedClientKey = uuid.toString();
+
+            slackIntegrationEntity = _ao.create(SlackIntegrationEntity.class);
+            slackIntegrationEntity.setActive(false);
+            slackIntegrationEntity.setClientKey(generatedClientKey);
+            slackIntegrationEntity.save();
+        }
+
+        return slackIntegrationEntity;
     }
 }
