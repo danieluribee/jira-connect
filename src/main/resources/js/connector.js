@@ -4,8 +4,10 @@ function verifyTeam() {
     var slack = $('#slack-input');
 
     if (slack.val().trim()) {
+        var hostBaseUrl = window.location.href.split('/plugins')[0];
+
         $.ajax({
-            url: SERVER_BASE_URL + '/rest/standbot/latest/slack/verify?subdomain=' + slack.val(),
+            url: SERVER_BASE_URL + '/rest/standbot/latest/slack/verify?subdomain=' + slack.val() + '&hostBaseUrl=' + hostBaseUrl,
             //data: { signature: authHeader },
             type: "GET",
             beforeSend: function (xhr) {

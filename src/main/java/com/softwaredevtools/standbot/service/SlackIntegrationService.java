@@ -1,6 +1,7 @@
-package com.softwaredevtools.standbot;
+package com.softwaredevtools.standbot.service;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
+import com.atlassian.jira.license.JiraLicenseManager;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
@@ -14,8 +15,12 @@ public class SlackIntegrationService {
     @ComponentImport
     private final ActiveObjects _ao;
 
+    @ComponentImport
+    private final JiraLicenseManager _jiraLicenseManager;
+
     @Inject
-    public SlackIntegrationService(ActiveObjects ao) {
+    public SlackIntegrationService(ActiveObjects ao, JiraLicenseManager jiraLicenseManager) {
+        _jiraLicenseManager = jiraLicenseManager;
         _ao = ao;
     }
 
@@ -55,10 +60,11 @@ public class SlackIntegrationService {
 
             UUID uuid = UUID.randomUUID();
             String generatedClientKey = uuid.toString();
+            String serverId = _jiraLicenseManager.getServerId();
 
             slackIntegrationEntity = _ao.create(SlackIntegrationEntity.class);
             slackIntegrationEntity.setActive(false);
-            slackIntegrationEntity.setClientKey(generatedClientKey);
+            slackIntegrationEntity.setClientKey(serverId + generatedClientKey);
             slackIntegrationEntity.save();
         }
 

@@ -11,7 +11,7 @@ import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
-import com.softwaredevtools.standbot.SlackIntegrationService;
+import com.softwaredevtools.standbot.service.SlackIntegrationService;
 
 @Scanned
 public class ConfigureServlet extends HttpServlet {

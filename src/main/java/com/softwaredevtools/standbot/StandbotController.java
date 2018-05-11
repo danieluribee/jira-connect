@@ -3,8 +3,11 @@ package com.softwaredevtools.standbot;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
+import com.softwaredevtools.standbot.model.mappers.SlackIntegrationMapper;
 import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
 import com.google.gson.Gson;
+import com.softwaredevtools.standbot.service.SlackIntegrationService;
+import com.softwaredevtools.standbot.service.StandbotAPI;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -50,7 +53,7 @@ public class StandbotController {
 
     @GET
     @Path("slack/verify")
-    public Response verifySlackInstallation(@QueryParam("subdomain") String subdomain) throws Exception {
+    public Response verifySlackInstallation(@QueryParam("subdomain") String subdomain, @QueryParam("hostBaseUrl") String hostBaseUrl) throws Exception {
         /*
         try to get the config for slack integration
          */
@@ -66,7 +69,24 @@ public class StandbotController {
         if (result == null) {
             return Response.status(404).build();
         } else {
-            return Response.ok(result).build();
+            SlackVerifyResponse slackVerifyResponse = GSON.fromJson(result, SlackVerifyResponse.class);
+
+            String teamId = slackVerifyResponse.getId();
+            String resultRelation = _standbotAPI.buildRelationJiraSlack(teamId, clientKey, hostBaseUrl);
+            return Response.ok(resultRelation).build();
         }
+    }
+
+    @GET
+    @Path("slack/configuration")
+    public Response getSlackConfiguration() {
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
+
+        if (slackIntegrationEntity == null) {
+            return Response.status(404).build();
+        }
+
+        SlackIntegration slackIntegration = SlackIntegrationMapper.map(slackIntegrationEntity);
+        return Response.ok(GSON.toJson(slackIntegration)).build();
     }
 }

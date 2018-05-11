@@ -1,9 +1,10 @@
-package com.softwaredevtools.standbot;
+package com.softwaredevtools.standbot.service;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
+import com.atlassian.jira.license.JiraLicenseManager;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
-import net.java.ao.RawEntity;
+import com.softwaredevtools.standbot.service.SlackIntegrationService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,12 +14,14 @@ import static org.mockito.Mockito.*;
 public class SlackIntegrationServiceTest {
 
     private ActiveObjects ao;
+    private JiraLicenseManager jiraLicenseManager;
     private SlackIntegrationService slackIntegrationService;
 
     @Before
     public void before() {
         ao = spy(ActiveObjects.class);
-        slackIntegrationService = new SlackIntegrationService(ao);
+        jiraLicenseManager = spy(JiraLicenseManager.class);
+        slackIntegrationService = new SlackIntegrationService(ao, jiraLicenseManager);
     }
 
     @Test
@@ -93,6 +96,7 @@ public class SlackIntegrationServiceTest {
 
         SlackIntegrationEntity slackIntegration = slackIntegrationService.generateSlackIntegrationIfNotExists();
         verify(ao).create(SlackIntegrationEntity.class);
+        verify(jiraLicenseManager).getServerId();
     }
 
 }

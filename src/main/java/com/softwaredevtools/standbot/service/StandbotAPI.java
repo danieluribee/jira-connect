@@ -1,8 +1,10 @@
-package com.softwaredevtools.standbot;
+package com.softwaredevtools.standbot.service;
 
+import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -10,9 +12,15 @@ import java.net.URL;
 public class StandbotAPI {
 
     //TODO standbot api should be dynamic
-    private final String STANDBOT_API_BASE_URL = "http://localhost:3000/api/slack/";
+    private final String STANDBOT_API_BASE_URL = "http://localhost:3000/api/";
 
-    public String makeHttpCall(String requestUrl, String method) {
+    private Gson GSON;
+
+    public StandbotAPI() {
+        this.GSON = new Gson();
+    }
+
+    public String makeHttpCall(String requestUrl, String method, String json) {
         try {
             URL url = new URL(requestUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -20,6 +28,13 @@ public class StandbotAPI {
 
             // give it 15 seconds to respond
             connection.setReadTimeout(15 * 1000);
+
+            if (method.equals("POST")) {
+                connection.setDoOutput(true);
+                connection.addRequestProperty("Content-type", "application/json");
+                connection.getOutputStream().write(json.getBytes("UTF-8"));
+            }
+
             connection.connect();
 
             // read the output from the server
@@ -37,7 +52,14 @@ public class StandbotAPI {
     }
 
     public String searchForSlackTeam(String subdomain, String clientKey) {
-        return makeHttpCall(STANDBOT_API_BASE_URL + "teams/search?subdomain=" + subdomain + "&clientKey=" + clientKey, "GET");
+        return makeHttpCall(STANDBOT_API_BASE_URL + "slack/teams/search?subdomain=" + subdomain + "&clientKey=" + clientKey, "GET", null);
     }
 
+    public String buildRelationJiraSlack(String teamId, String clientKey, String hostBaseUrl) {
+        return makeHttpCall(
+                STANDBOT_API_BASE_URL + "jira-instances/current/relations?clientKey=" + clientKey + "&hostBaseUrl=" + hostBaseUrl,
+                "POST",
+                "{\"team_id\":\"" + teamId + "\"}"
+        );
+    }
 }

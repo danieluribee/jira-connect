@@ -1,13 +1,9 @@
-package com.softwaredevtools.standbot;
+package com.softwaredevtools.standbot.service;
 
-import com.atlassian.activeobjects.external.ActiveObjects;
-import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
-import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
-import net.java.ao.RawEntity;
+import com.softwaredevtools.standbot.service.StandbotAPI;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class StandbotAPITest {
@@ -25,7 +21,18 @@ public class StandbotAPITest {
         standbotAPI.searchForSlackTeam("testdomain", "123");
         verify(standbotAPI).makeHttpCall(
                 "http://localhost:3000/api/slack/teams/search?subdomain=testdomain&clientKey=123",
-                "GET"
+                "GET",
+                null
+        );
+    }
+
+    @Test
+    public void buildRelationSlackJira() {
+        standbotAPI.buildRelationJiraSlack("11", "123", "localhost");
+        verify(standbotAPI).makeHttpCall(
+                "http://localhost:3000/api/jira-instances/current/relations?clientKey=123&hostBaseUrl=localhost",
+                "POST",
+                "{\"team_id\":\"11\"}"
         );
     }
 

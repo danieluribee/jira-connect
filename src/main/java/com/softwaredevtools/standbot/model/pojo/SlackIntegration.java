@@ -5,6 +5,15 @@ public class SlackIntegration {
     private boolean active;
     private String clientKey;
 
+    public SlackIntegration() {
+
+    }
+
+    public SlackIntegration(boolean active, String clientKey) {
+        this.active = active;
+        this.clientKey = clientKey;
+    }
+
     public SlackIntegration(boolean active) {
         this.active = active;
     }
