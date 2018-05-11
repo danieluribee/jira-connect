@@ -9,5 +9,5 @@ image: coviedodlt/atlassian-sdk
 pipelines:
   default:
     - step:
-      script:
+        script:
         - atlas-unit-test
