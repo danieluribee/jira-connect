@@ -1,4 +1,4 @@
-package com.softwaredevtools.standbot.service;
+package com.softwaredevtools.standbot;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;

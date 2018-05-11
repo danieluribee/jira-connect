@@ -1,0 +1,13 @@
+# This is a sample build configuration for Maven.
+# Check our guides at https://confluence.atlassian.com/x/VYk8Lw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: coviedodlt/atlassian-sdk
+ # reference: https://confluence.atlassian.com/confkb/update-the-confluence-docker-image-to-use-oracle-jdk-829062521.html
+
+pipelines:
+  default:
+    - step:
+      script:
+        - atlas-unit-test

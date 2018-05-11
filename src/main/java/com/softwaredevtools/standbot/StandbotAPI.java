@@ -1,4 +1,4 @@
-package com.softwaredevtools.standbot.service;
+package com.softwaredevtools.standbot;
 
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
@@ -9,9 +9,10 @@ import java.net.URL;
 @Service
 public class StandbotAPI {
 
+    //TODO standbot api should be dynamic
     private final String STANDBOT_API_BASE_URL = "http://localhost:3000/api/slack/";
 
-    private String makeHttpCall(String requestUrl, String method) {
+    public String makeHttpCall(String requestUrl, String method) {
         try {
             URL url = new URL(requestUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

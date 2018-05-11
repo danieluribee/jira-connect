@@ -5,10 +5,7 @@ import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
 import com.google.gson.Gson;
-import com.softwaredevtools.standbot.service.SlackIntegrationService;
-import com.softwaredevtools.standbot.service.StandbotAPI;
 
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 

@@ -6,14 +6,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.UUID;
 
-import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
-import com.softwaredevtools.standbot.service.SlackIntegrationService;
+import com.softwaredevtools.standbot.SlackIntegrationService;
 
 @Scanned
 public class ConfigureServlet extends HttpServlet {
