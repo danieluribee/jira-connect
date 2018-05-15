@@ -1,19 +1,30 @@
-<script
-        src="https://code.jquery.com/jquery-3.3.1.min.js"
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous">
-</script>
+<html>
+    <head>
+        <meta name="client_key" content="$clientKey">
+##        <script
+##                src="https://code.jquery.com/jquery-3.3.1.min.js"
+##                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+##                crossorigin="anonymous">
+##        </script>
+##        <script src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.js" type="application/javascript"></script>
+##        <script src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.js" type="application/javascript"></script>
+##        <script src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/vendor.js" type="application/javascript"></script>
 
-<script src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.js" type="application/javascript"></script>
-<script src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.js" type="application/javascript"></script>
 
-<div>
-    <h1>Pantalla de configuracion</h1>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js" type="text/javascript"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js" type="text/javascript"></script>
+        <script src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/main.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div ng-app="JiraSettingsApp">
+            <h1>Pantalla de configuracion</h1>
 
-    <div>
-        <input type="text" id="slack-input">.slack.com
+            <div>
+                <input type="text" id="slack-input">.slack.com
 
-        <button onclick="verifyTeam()">Verify team</button>
-    </div>
-</div>
+                <button onclick="verifyTeam()">Verify team</button>
+            </div>
+        </div>
+    </body>
+</html>
 

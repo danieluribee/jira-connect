@@ -1,2 +1,5 @@
 target
 .idea
+node_modules
+src/main/resources/configure-app/build
+src/main/resources/configure-app/temp

@@ -1,0 +1,28 @@
+{
+  "name": "@fhernandezn/connector",
+  "version": "1.0.0",
+  "description": "Standbot connector for Jira Server",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "grunt && atlas-mvn package"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/nearsoftlabs/jira-server-connector.git"
+  },
+  "author": "Francisco Hernandez (fhernandez@nearsoft.com)",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/nearsoftlabs/jira-server-connector#readme",
+  "dependencies": {
+    "angular": "^1.7.0",
+    "angular-route": "^1.7.0",
+    "grunt": "^1.0.2",
+    "grunt-angular-templates": "^1.1.0",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-uglify": "^3.3.0",
+    "save": "^2.3.2"
+  }
+}

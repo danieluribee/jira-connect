@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -36,7 +37,12 @@ public class ConfigureServlet extends HttpServlet {
         System.out.println("Using client key: " + slackIntegrationEntity.getClientKey());
 
         response.setContentType("text/html;charset=utf-8");
-        renderer.render("templates/admin.vm", response.getWriter());
+
+        HashMap<String, Object> map = new HashMap();
+
+        map.put("clientKey", slackIntegrationEntity.getClientKey());
+
+        renderer.render("templates/admin.vm", map, response.getWriter());
     }
 
 }

@@ -23,6 +23,8 @@
 
         <resource type="download" name="connector.css" location="/css/connector.css"/>
         <resource type="download" name="connector.js" location="/js/connector.js"/>
+        <resource type="download" name="main.js" location="/configure-app/build/main.js"/>
+        <resource type="download" name="vendor.js" location="/configure-app/build/vendor.js"/>
         <resource type="download" name="images/" location="/images"/>
 
         <context>connector</context>
