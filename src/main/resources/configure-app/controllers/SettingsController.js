@@ -1,4 +1,4 @@
-//(function () {
+(function (angular) {
     angular.module('JiraSettingsApp')
         .controller('SettingsController', SettingsController);
 
@@ -98,4 +98,4 @@
             });
         }
     }
-//})();
+})(window.angular);

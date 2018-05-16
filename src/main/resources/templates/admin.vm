@@ -17,13 +17,14 @@
     </head>
     <body>
         <div ng-app="JiraSettingsApp">
-            <h1>Pantalla de configuracion</h1>
-
-            <div>
-                <input type="text" id="slack-input">.slack.com
-
-                <button onclick="verifyTeam()">Verify team</button>
-            </div>
+            <div ng-view=""></div>
+##            <h1>Pantalla de configuracion</h1>
+##
+##            <div>
+##                <input type="text" id="slack-input">.slack.com
+##
+##                <button onclick="verifyTeam()">Verify team</button>
+##            </div>
         </div>
     </body>
 </html>

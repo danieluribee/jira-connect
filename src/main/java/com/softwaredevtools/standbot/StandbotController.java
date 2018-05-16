@@ -11,6 +11,7 @@ import com.softwaredevtools.standbot.service.StandbotAPI;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.util.List;
 
 @Path("/")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -49,6 +50,24 @@ public class StandbotController {
     @Path("deactivate")
     public Response deactivate() {
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("slack/relations")
+    public Response getSlackRelations(@QueryParam("hostBaseUrl") String hostBaseUrl) {
+        /*
+        try to get the config for slack integration
+         */
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
+
+        if (slackIntegrationEntity == null) {
+            return Response.status(500).build();
+        }
+
+        String clientKey = slackIntegrationEntity.getClientKey();
+        String result = _standbotAPI.getSlackRelations(clientKey, hostBaseUrl);
+
+        return Response.ok(result).build();
     }
 
     @GET

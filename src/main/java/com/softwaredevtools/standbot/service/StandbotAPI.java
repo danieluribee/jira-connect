@@ -62,4 +62,11 @@ public class StandbotAPI {
                 "{\"team_id\":\"" + teamId + "\"}"
         );
     }
+
+    public String getSlackRelations(String clientKey, String hostBaseUrl) {
+        return makeHttpCall(STANDBOT_API_BASE_URL + "jira-instances/current/relations?clientKey=" + clientKey + "&hostBaseUrl=" + hostBaseUrl,
+                "GET",
+                null
+        );
+    }
 }
