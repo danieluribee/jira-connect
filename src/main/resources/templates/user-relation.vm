@@ -1,0 +1,31 @@
+<html>
+<head>
+    <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui.css" media="all">
+    <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui-experimental.css" media="all">
+    <link rel="stylesheet" href="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css"></link>
+</head>
+<body>
+<div>
+    <div class="aui-page-panel main-panel" style="margin-top: 0; border: none;">
+        <div class="aui-page-panel-inner">
+            <section class="aui-page-panel-item">
+                <h1 style="margin: 40px 0;">Stand-up bot for Slack</h1>
+                <div class="aui-page-panel main-panel" style="margin-top: 0; border: none;">
+                    <div ng-hide="vm.loading" style="margin-bottom: 40px;">
+                        <div style="overflow: hidden">
+                            <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-confirm-link.png">
+                        </div>
+                        <div style="clear: both; margin-top: 20px; padding-left: 114px;">
+                            <a id="btn-verify-slack-team" class="aui-button aui-button-primary"
+                               href="/jira/plugins/servlet/standbot/user-relation-confirm?slackUserId=$slackUserId&slackTeamId=$slackTeamId">
+                                Confirm
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+</body>
+</html>

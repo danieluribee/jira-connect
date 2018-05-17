@@ -1,7 +1,9 @@
 package com.softwaredevtools.standbot.service;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.license.JiraLicenseManager;
+import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
@@ -69,5 +71,9 @@ public class SlackIntegrationService {
         }
 
         return slackIntegrationEntity;
+    }
+
+    public ApplicationUser getConfluenceUser() {
+        return ComponentAccessor.getJiraAuthenticationContext().getUser();
     }
 }

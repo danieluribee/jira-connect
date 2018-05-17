@@ -38,4 +38,12 @@
         <url-pattern>/standbot/configure</url-pattern>
     </servlet>
 
+    <servlet name="Standbot user relation" key="standbotuserrelation" class="com.softwaredevtools.standbot.servlet.UserRelationServlet">
+        <url-pattern>/standbot/user-relation</url-pattern>
+    </servlet>
+
+    <servlet name="Standbot user relation confirm" key="standbotuserrelationconfirm" class="com.softwaredevtools.standbot.servlet.UserRelationConfirmServlet">
+        <url-pattern>/standbot/user-relation-confirm</url-pattern>
+    </servlet>
+
 </atlassian-plugin>

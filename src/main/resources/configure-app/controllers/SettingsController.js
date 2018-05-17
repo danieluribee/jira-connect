@@ -2,9 +2,9 @@
     angular.module('JiraSettingsApp')
         .controller('SettingsController', SettingsController);
 
-    SettingsController.$inject = ['$http', '$q', '$window','$log', '$location'];
+    SettingsController.$inject = ['SERVER_BASE_URL', '$http', '$q', '$window','$log', '$location'];
 
-    function SettingsController($http, $q, $window, $log, $location) {
+    function SettingsController(SERVER_BASE_URL, $http, $q, $window, $log, $location) {
         var vm = this;
         var token = $window.token;
 
@@ -26,7 +26,8 @@
         _init();
 
         function _init() {
-            $http.get('/api/jira-instances/current/relations?jwt=' + token).then(function (relationsData) {
+            $http.get(SERVER_BASE_URL + '/slack/relations').then(function (relationsData) {
+                debugger
                 $log.log(relationsData, relationsData.data.length);
                 if (relationsData.data && relationsData.data.length > 0) {
                     vm.slackTeamId = relationsData.data[0].slack_team_id;

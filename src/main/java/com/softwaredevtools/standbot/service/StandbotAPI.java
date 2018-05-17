@@ -69,4 +69,11 @@ public class StandbotAPI {
                 null
         );
     }
+
+    public String verifyRelation(String clientKey, String userId, String hostBaseUrl, String slackUserId, String slackTeamId) {
+        return makeHttpCall(STANDBOT_API_BASE_URL + "jira-instances/current/relations/verify?clientKey=" + clientKey + "&hostBaseUrl=" + hostBaseUrl + "&slackUserId=" + slackUserId + "&slackTeamId=" + slackTeamId + "&userId=" + userId,
+                "GET",
+                null
+        );
+    }
 }
