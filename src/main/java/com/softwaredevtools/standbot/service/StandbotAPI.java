@@ -76,4 +76,20 @@ public class StandbotAPI {
                 null
         );
     }
+
+    public String getSlackTeams(String clientKey, String hostBaseUrl, String slackTeamId) {
+        return makeHttpCall(
+                STANDBOT_API_BASE_URL + "slack/teams/" + slackTeamId + "?clientKey=" + clientKey + "&hostBaseUrl=" + hostBaseUrl,
+                "GET",
+                null
+        );
+    }
+
+    public String getStandups(String clientKey, String hostBaseUrl, String teamId) {
+        return makeHttpCall(
+                STANDBOT_API_BASE_URL + "slack/teams/" + teamId + "/standups?clientKey=" + clientKey + "&hostBaseUrl=" + hostBaseUrl,
+                "GET",
+                null
+        );
+    }
 }

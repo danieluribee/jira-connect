@@ -32,7 +32,8 @@
                 if (relationsData.data && relationsData.data.length > 0) {
                     vm.slackTeamId = relationsData.data[0].slack_team_id;
 
-                    $http.get('/api/slack/teams/' + vm.slackTeamId + '?jwt=' + token).then(function (teamData) {
+                    $http.get(SERVER_BASE_URL + '/slack/teams/' + vm.slackTeamId).then(function (teamData) {
+                        debugger
                         vm.slackTeamName = teamData.data.team_name;
                         vm.slackSubdomain = teamData.data.domain;
                     });
@@ -45,11 +46,16 @@
         }
 
         function _fetchStandupsAndTeams() {
-            var standupsPromise = $http.get('/api/slack/teams/' + vm.slackTeamId + '/standups?jwt=' + token).then(function (standupsResult) {
+            var standupsPromise = $http.get(SERVER_BASE_URL + '/slack/teams/' + vm.slackTeamId + '/standups').then(function (standupsResult) {
                 vm.standups = standupsResult.data;
             });
-            var projectsPromise = $http.get('/api/jira/projects?jwt=' + token).then(function (projectsResult) {
-                vm.projects = projectsResult.data;
+            var projectsPromise = $http.get(SERVER_BASE_URL + '/jira/projects').then(function (projectsResult) {
+                vm.projects = projectsResult.data.map(function(project) {
+                    return {
+                        id: project.id,
+                        name: project.projectGV.name
+                    }
+                });
                 $log.log(vm.projects);
             });
 

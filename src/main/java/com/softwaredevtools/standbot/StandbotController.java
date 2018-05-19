@@ -1,5 +1,9 @@
 package com.softwaredevtools.standbot;
 
+import com.atlassian.jira.bc.ServiceOutcome;
+import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
@@ -21,11 +25,13 @@ public class StandbotController {
     private final SlackIntegrationService _slackIntegrationService;
     private final StandbotAPI _standbotAPI;
     private Gson GSON;
+    private ProjectManager _projectManager;
 
     public StandbotController(SlackIntegrationService slackIntegrationService, StandbotAPI standbotAPI) {
         _slackIntegrationService = slackIntegrationService;
         _standbotAPI = standbotAPI;
         GSON = new Gson();
+        _projectManager = ComponentAccessor.getProjectManager();
     }
 
     /*
@@ -95,6 +101,44 @@ public class StandbotController {
             return Response.ok(resultRelation).build();
         }
     }
+
+    @GET
+    @Path("slack/teams/{teamId}")
+    public Response getSlackTeams(@PathParam("teamId") String teamId, @QueryParam("hostBaseUrl") String hostBaseUrl) {
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
+
+        if (slackIntegrationEntity == null) {
+            return Response.status(404).build();
+        }
+
+        SlackIntegration slackIntegration = SlackIntegrationMapper.map(slackIntegrationEntity);
+
+        String response = _standbotAPI.getSlackTeams(slackIntegration.getClientKey(), hostBaseUrl, teamId);
+        return Response.ok(response).build();
+    }
+
+    @GET
+    @Path("slack/teams/{teamId}/standups")
+    public Response getStandups(@PathParam("teamId") String teamId, @QueryParam("hostBaseUrl") String hostBaseUrl) {
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
+
+        if (slackIntegrationEntity == null) {
+            return Response.status(404).build();
+        }
+
+        SlackIntegration slackIntegration = SlackIntegrationMapper.map(slackIntegrationEntity);
+
+        String response = _standbotAPI.getStandups(slackIntegration.getClientKey(), hostBaseUrl, teamId);
+        return Response.ok(response).build();
+    }
+
+    @GET
+    @Path("jira/projects")
+    public Response getProjects(@QueryParam("hostBaseUrl") String hostBaseUrl) {
+        List<Project> projects = _projectManager.getProjectObjects();
+        return Response.ok(GSON.toJson(projects)).build();
+    }
+
 
     @GET
     @Path("slack/configuration")
