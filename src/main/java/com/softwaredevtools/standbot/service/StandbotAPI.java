@@ -92,4 +92,12 @@ public class StandbotAPI {
                 null
         );
     }
+
+    public String saveRelationChannelProject(String clientKey, String hostBaseUrl, String projectId, String slackChannelId, String slackTeamId) {
+        return makeHttpCall(
+                STANDBOT_API_BASE_URL + "jira/projects/" + projectId + "/standups?clientKey=" + clientKey + "&hostBaseUrl=" + hostBaseUrl,
+                "POST",
+                "{\"slack_channel_id\":\"" + slackChannelId + "\", \"slack_team_id\":\"" + slackTeamId + "\"}"
+        );
+    }
 }

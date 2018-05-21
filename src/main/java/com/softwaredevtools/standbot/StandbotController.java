@@ -139,6 +139,22 @@ public class StandbotController {
         return Response.ok(GSON.toJson(projects)).build();
     }
 
+    @POST
+    @Path("jira/projects/{projectId}/standups")
+    public Response saveStandupRelation(@QueryParam("hostBaseUrl") String hostBaseUrl, @PathParam("projectId") String projectId,
+                                        @QueryParam("channelId") String slackChannelId, @QueryParam("teamId") String slackTeamId) {
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
+
+        if (slackIntegrationEntity == null) {
+            return Response.status(404).build();
+        }
+
+        SlackIntegration slackIntegration = SlackIntegrationMapper.map(slackIntegrationEntity);
+
+        String response = _standbotAPI.saveRelationChannelProject(slackIntegration.getClientKey(), hostBaseUrl, projectId, slackChannelId, slackTeamId);
+        return Response.ok(response).build();
+    }
+
 
     @GET
     @Path("slack/configuration")

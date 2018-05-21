@@ -27,13 +27,11 @@
 
         function _init() {
             $http.get(SERVER_BASE_URL + '/slack/relations').then(function (relationsData) {
-                debugger
                 $log.log(relationsData, relationsData.data.length);
                 if (relationsData.data && relationsData.data.length > 0) {
                     vm.slackTeamId = relationsData.data[0].slack_team_id;
 
                     $http.get(SERVER_BASE_URL + '/slack/teams/' + vm.slackTeamId).then(function (teamData) {
-                        debugger
                         vm.slackTeamName = teamData.data.team_name;
                         vm.slackSubdomain = teamData.data.domain;
                     });
@@ -94,10 +92,7 @@
                 /** 
                  * If jira_project_id == 0, we should send a DELETE but is not yet implemented
                 */
-                return $http.post('/api/jira/projects/' + standup.jira_project_id + '/standups?jwt=' + token, {
-                    slack_channel_id: standup.channel_id,
-                    slack_team_id: vm.slackTeamId
-                });
+                return $http.post(SERVER_BASE_URL + '/jira/projects/' + standup.jira_project_id + '/standups?channelId=' + standup.channel_id + '&teamId=' + vm.slackTeamId);
             });
 
             $q.all(promises).then(function () {
