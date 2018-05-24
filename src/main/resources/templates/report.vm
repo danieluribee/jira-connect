@@ -1,11 +1,10 @@
 <html>
 <head>
 </head>
-<body style="margin: 0;">
+<body style="margin: 0; background: #fff;">
 <iframe
-        onload="getInnerIframe()"
         id="jira-report"
-        style="width: 100%; height: 100%; border: none;"
+        style="width: 100%; height: 100vh; border: none;"
         src="http://localhost:3000/standup-report?projectId=$projectId&clientKey=$clientKey"
         frameborder="0">
 </iframe>
