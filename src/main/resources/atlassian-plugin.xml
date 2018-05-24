@@ -46,4 +46,8 @@
         <url-pattern>/standbot/user-relation-confirm</url-pattern>
     </servlet>
 
+    <servlet name="Standbot report" key="standbotreport" class="com.softwaredevtools.standbot.servlet.ReportServlet">
+        <url-pattern>/standbot/report</url-pattern>
+    </servlet>
+
 </atlassian-plugin>
