@@ -45,7 +45,7 @@ public class Report implements WebPanel {
             return null;
         }
 
-        map.put("projectId", 100);
+        map.put("projectId", project.getId());
         map.put("clientKey", slackIntegrationEntity.getClientKey());
 
         StringWriter stringWriter = new StringWriter();

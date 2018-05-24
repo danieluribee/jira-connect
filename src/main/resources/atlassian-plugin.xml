@@ -30,6 +30,13 @@
         <context>connector</context>
     </web-resource>
 
+
+    <web-resource key="connector-resources-general" name="connector Web Resources general">
+        <resource type="download" name="connector.css" location="/css/connector.css"/>
+        <resource type="download" name="images/" location="/images"/>
+        <context>atl.general</context>
+    </web-resource>
+
     <rest key="standbotRest" path="/standbot" version="1.0" class="com.softwaredevtools.standbot.StandbotController">
         <description>Provides rest api for standbot.</description>
     </rest>
@@ -53,7 +60,7 @@
     <web-item key="standbotreport-project" section="jira.project.sidebar.plugins.navigation" weight="300">
         <label key="standbot.report.project.title"/>
         <link>/projects/$pathEncodedProjectKey?selectedItem=stand-bot-slack-stand-up-bot-for-jira:standbotreport-project-render</link>
-        <param name="iconClass" value="aui-icon-large icon-sidebar-release"/>
+        <param name="iconClass" value="aui-icon-large standbot-sidebar-icon"/>
     </web-item>
 
     <web-panel key="standbotreport-project-render" class="com.softwaredevtools.standbot.webpabel.Report"
