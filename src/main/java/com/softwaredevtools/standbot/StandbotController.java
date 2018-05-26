@@ -13,8 +13,10 @@ import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.model.mappers.SlackIntegrationMapper;
 import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
 import com.google.gson.Gson;
+import com.softwaredevtools.standbot.service.JWTService;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
 import com.softwaredevtools.standbot.service.StandbotAPI;
+import io.jsonwebtoken.Claims;
 import org.ofbiz.core.entity.GenericEntityException;
 
 import javax.ws.rs.*;
@@ -32,13 +34,15 @@ public class StandbotController {
     private Gson GSON;
     private ProjectManager _projectManager;
     private IssueManager _issueManager;
+    private JWTService _jwtService;
 
-    public StandbotController(SlackIntegrationService slackIntegrationService, StandbotAPI standbotAPI) {
+    public StandbotController(SlackIntegrationService slackIntegrationService, StandbotAPI standbotAPI, JWTService jwtService) {
         _slackIntegrationService = slackIntegrationService;
         _standbotAPI = standbotAPI;
         GSON = new Gson();
         _projectManager = ComponentAccessor.getProjectManager();
         _issueManager = ComponentAccessor.getIssueManager();
+        _jwtService = jwtService;
     }
 
     /*
@@ -296,5 +300,24 @@ public class StandbotController {
 
         SlackIntegration slackIntegration = SlackIntegrationMapper.map(slackIntegrationEntity);
         return Response.ok(GSON.toJson(slackIntegration)).build();
+    }
+
+    @GET
+    @Path("jwt/sign")
+    public Response signJwt() {
+        HashMap<String, Object> data = new HashMap<String, Object>();
+
+        data.put("test", 1);
+        data.put("another", 2);
+
+        return Response.ok(_jwtService.sign(data)).build();
+    }
+
+    @GET
+    @Path("jwt/decode")
+    public Response decodeJwt(@QueryParam("jwt") String jwt) {
+        Claims claims = _jwtService.parseJWT(jwt);
+
+        return Response.ok("OK").build();
     }
 }

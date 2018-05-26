@@ -139,6 +139,12 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.0</version>
+            <scope>provided</scope>
+        </dependency>
 
 
         <!-- Uncomment to use TestKit in your project. Details at https://bitbucket.org/atlassian/jira-testkit -->
@@ -191,6 +197,8 @@
                         <Import-Package>
                             org.springframework.osgi.*;resolution:="optional",
                             org.eclipse.gemini.blueprint.*;resolution:="optional",
+                            io.jsonwebtoken.*;resolution:="optional",
+                            android.util.*;resolution:="optional",
                             *
                         </Import-Package>
 
