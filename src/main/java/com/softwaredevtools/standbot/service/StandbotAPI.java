@@ -1,6 +1,7 @@
 package com.softwaredevtools.standbot.service;
 
 import com.google.gson.Gson;
+import com.softwaredevtools.standbot.config.StandbotConfig;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -13,10 +14,6 @@ import java.util.HashMap;
 
 @Service
 public class StandbotAPI {
-
-    //TODO standbot api should be dynamic
-    private final String STANDBOT_API_BASE_URL = "http://localhost:3000/api/";
-
     private Gson GSON;
     private JWTService _jwtService;
 
@@ -68,13 +65,13 @@ public class StandbotAPI {
 
     public String searchForSlackTeam(String subdomain, String clientKey) {
         String jwt = getJwt(clientKey, "", "");
-        return makeHttpCall(STANDBOT_API_BASE_URL + "slack/teams/search?subdomain=" + subdomain + "&jwt=" + jwt, "GET", null);
+        return makeHttpCall(StandbotConfig.STANDBOT_API_BASE_URL + "slack/teams/search?subdomain=" + subdomain + "&jwt=" + jwt, "GET", null);
     }
 
     public String buildRelationJiraSlack(String teamId, String clientKey, String hostBaseUrl) {
         String jwt = getJwt(clientKey, hostBaseUrl, "");
         return makeHttpCall(
-                STANDBOT_API_BASE_URL + "jira-instances/current/relations?jwt=" + jwt,
+                StandbotConfig.STANDBOT_API_BASE_URL + "jira-instances/current/relations?jwt=" + jwt,
                 "POST",
                 "{\"team_id\":\"" + teamId + "\"}"
         );
@@ -82,7 +79,7 @@ public class StandbotAPI {
 
     public String getSlackRelations(String clientKey, String hostBaseUrl) {
         String jwt = getJwt(clientKey, hostBaseUrl, "");
-        return makeHttpCall(STANDBOT_API_BASE_URL + "jira-instances/current/relations?jwt=" + jwt,
+        return makeHttpCall(StandbotConfig.STANDBOT_API_BASE_URL + "jira-instances/current/relations?jwt=" + jwt,
                 "GET",
                 null
         );
@@ -90,7 +87,7 @@ public class StandbotAPI {
 
     public String verifyRelation(String clientKey, String userId, String hostBaseUrl, String slackUserId, String slackTeamId) {
         String jwt = getJwt(clientKey, hostBaseUrl, userId);
-        return makeHttpCall(STANDBOT_API_BASE_URL + "jira-instances/current/relations/verify?jwt=" + jwt + "&slackUserId=" + slackUserId + "&slackTeamId=" + slackTeamId,
+        return makeHttpCall(StandbotConfig.STANDBOT_API_BASE_URL + "jira-instances/current/relations/verify?jwt=" + jwt + "&slackUserId=" + slackUserId + "&slackTeamId=" + slackTeamId,
                 "GET",
                 null
         );
@@ -99,7 +96,7 @@ public class StandbotAPI {
     public String getSlackTeams(String clientKey, String hostBaseUrl, String slackTeamId) {
         String jwt = getJwt(clientKey, hostBaseUrl, "");
         return makeHttpCall(
-                STANDBOT_API_BASE_URL + "slack/teams/" + slackTeamId + "?jwt=" + jwt,
+                StandbotConfig.STANDBOT_API_BASE_URL + "slack/teams/" + slackTeamId + "?jwt=" + jwt,
                 "GET",
                 null
         );
@@ -108,7 +105,7 @@ public class StandbotAPI {
     public String getStandups(String clientKey, String hostBaseUrl, String teamId) {
         String jwt = getJwt(clientKey, hostBaseUrl, "");
         return makeHttpCall(
-                STANDBOT_API_BASE_URL + "slack/teams/" + teamId + "/standups?jwt=" + jwt,
+                StandbotConfig.STANDBOT_API_BASE_URL + "slack/teams/" + teamId + "/standups?jwt=" + jwt,
                 "GET",
                 null
         );
@@ -117,7 +114,7 @@ public class StandbotAPI {
     public String saveRelationChannelProject(String clientKey, String hostBaseUrl, String projectId, String slackChannelId, String slackTeamId) {
         String jwt = getJwt(clientKey, hostBaseUrl, "");
         return makeHttpCall(
-                STANDBOT_API_BASE_URL + "jira/projects/" + projectId + "/standups?jwt=" + jwt,
+                StandbotConfig.STANDBOT_API_BASE_URL + "jira/projects/" + projectId + "/standups?jwt=" + jwt,
                 "POST",
                 "{\"slack_channel_id\":\"" + slackChannelId + "\", \"slack_team_id\":\"" + slackTeamId + "\"}"
         );

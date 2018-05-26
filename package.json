@@ -5,7 +5,9 @@
   "main": "Gruntfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "grunt && atlas-mvn package"
+    "build": "grunt && atlas-mvn package",
+    "build:stage": "grunt stage && atlas-mvn package",
+    "build:production": "grunt production && atlas-mvn package"
   },
   "repository": {
     "type": "git",
@@ -22,7 +24,9 @@
     "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-uglify": "^3.3.0",
+    "grunt-replace": "^1.0.1",
     "save": "^2.3.2"
   }
 }

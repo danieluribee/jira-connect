@@ -1,5 +1,6 @@
 package com.softwaredevtools.standbot.service;
 
+import com.softwaredevtools.standbot.config.StandbotConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -32,7 +33,7 @@ public class JWTService {
         builder = Jwts.builder()
                 .setClaims(data)
                 .setIssuedAt(now)
-                .signWith(signatureAlgorithm, "STAGE-BOT#!".getBytes());
+                .signWith(signatureAlgorithm, StandbotConfig.JWT_SECRET.getBytes());
 
         //if it has been specified, let's add the expiration
         long expMillis = nowMillis + 30000;
@@ -48,7 +49,7 @@ public class JWTService {
 
         //This line will throw an exception if it is not a signed JWS (as expected)
         return Jwts.parser()
-                .setSigningKey("STAGE-BOT#!".getBytes())
+                .setSigningKey(StandbotConfig.JWT_SECRET.getBytes())
                 .parseClaimsJws(jwt).getBody();
     }
 }

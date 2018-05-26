@@ -1,6 +1,7 @@
 module.exports = function (grunt) {
 
     var CWD = './src/main/resources/configure-app';
+    var config = grunt.file.readJSON('config.json');
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -47,9 +48,98 @@ module.exports = function (grunt) {
                 src: CWD + '/templates/*.html',
                 dest: CWD + '/temp/templates.js'
             }
+        },
+        copy: {
+            config: {
+                files: [
+                    // generate a new atlassian-plugin.xml to replace timestamp
+                    {
+                        src: './src/main/java/com/softwaredevtools/standbot/config/StandbotConfigTemplate.java',
+                        dest: './src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java',
+                    }
+                ],
+                options: {
+                    process: function(content, srcpath) {
+                        if (srcpath == './src/main/java/com/softwaredevtools/standbot/config/StandbotConfigTemplate.java') {
+                            return content.replace('StandbotConfigTemplate', 'StandbotConfig');
+                        }
+                        return content;
+                    }
+                }
+            }
+        },
+        replace: {
+            local: {
+                options: {
+                    patterns: [
+                        {
+                            match: 'JWT_SECRET',
+                            replacement: config.local.jwt
+                        },
+                        {
+                            match: 'STANDBOT_API_BASE_URL',
+                            replacement: config.local.api_url
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
+                        dest: './src/main/java/com/softwaredevtools/standbot/config/'
+                    }
+                ]
+            },
+            stage: {
+                options: {
+                    patterns: [
+                        {
+                            match: 'JWT_SECRET',
+                            replacement: config.stage.jwt
+                        },
+                        {
+                            match: 'STANDBOT_API_BASE_URL',
+                            replacement: config.stage.api_url
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
+                        dest: './src/main/java/com/softwaredevtools/standbot/config/'
+                    }
+                ]
+            },
+            production: {
+                options: {
+                    patterns: [
+                        {
+                            match: 'JWT_SECRET',
+                            replacement: config.production.jwt
+                        },
+                        {
+                            match: 'STANDBOT_API_BASE_URL',
+                            replacement: config.production.api_url
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
+                        dest: './src/main/java/com/softwaredevtools/standbot/config/'
+                    }
+                ]
+            },
         }
     });
 
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-replace');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -57,6 +147,14 @@ module.exports = function (grunt) {
 
     // Tell Grunt what to do when we type "grunt" into the terminal
     grunt.registerTask('default', [
-        'clean', 'ngtemplates', 'concat:vendor', 'concat:dist', //'uglify'
+        'clean', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config', 'replace:local'
+    ]);
+
+    grunt.registerTask('stage', [
+        'clean', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config', 'replace:stage'
+    ]);
+
+    grunt.registerTask('production', [
+        'clean', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config', 'replace:production'
     ]);
 };

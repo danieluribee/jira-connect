@@ -1,0 +1,14 @@
+{
+    "local": {
+        "jwt": "LOCAL-BOT#!",
+        "api_url": "http://localhost:3000"
+    },
+    "stage": {
+        "jwt": "STAGE-BOT#!",
+        "api_url": "https://standup-bot-stage.herokuapp.com/"
+    },
+    "production": {
+        "jwt": "PRODUCTION-BOT#!",
+        "api_url": "https://nearsoftlabs-standup-bot.herokuapp.com/"
+    }
+}
