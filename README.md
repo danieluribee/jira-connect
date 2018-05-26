@@ -34,6 +34,9 @@ Depending on your target environment you have to use a specific grunt task:
 
 Instead of start Jira with `atlas-run`, use `atlas-debug`
 
+# How to run tests
+
+- `atlas-unit-test`
 
 # Here are the SDK commands you'll use immediately:
 
