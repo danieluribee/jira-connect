@@ -4,6 +4,7 @@ import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
+import com.softwaredevtools.standbot.service.JWTService;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
 
 import javax.inject.Inject;
@@ -21,12 +22,14 @@ public class ReportServlet extends HttpServlet {
     private final TemplateRenderer renderer;
 
     private final SlackIntegrationService _slackIntegrationService;
+    private final JWTService _jwtService;
 
 
     @Inject
-    public ReportServlet(TemplateRenderer renderer, SlackIntegrationService slackIntegrationService) {
+    public ReportServlet(TemplateRenderer renderer, SlackIntegrationService slackIntegrationService, JWTService jwtService) {
         _slackIntegrationService = slackIntegrationService;
         this.renderer = renderer;
+        _jwtService = jwtService;
     }
 
     @Override
@@ -46,12 +49,16 @@ public class ReportServlet extends HttpServlet {
         String slackTeamId = request.getParameter("ac.slackTeamId");
         String standupId = request.getParameter("ac.standupId");
 
+        HashMap<String, Object> data = new HashMap<String, Object>();
+        data.put("clientKey", slackIntegrationEntity.getClientKey());
+        String jwt = _jwtService.sign(data);
 
         map.put("projectId", projectId);
         map.put("slackChannelId", slackChannelId);
         map.put("slackTeamId", slackTeamId);
         map.put("standupId", standupId);
         map.put("clientKey", slackIntegrationEntity.getClientKey());
+        map.put("jwt", jwt);
 
         renderer.render("templates/report.vm", map, response.getWriter());
     }

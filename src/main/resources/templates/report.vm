@@ -5,7 +5,7 @@
 <iframe
         id="jira-report"
         style="width: 100%; height: 100vh; border: none;"
-        src="http://localhost:3000/standup-report?projectId=$projectId&clientKey=$clientKey"
+        src="http://localhost:3000/standup-report?projectId=$projectId&clientKey=$clientKey&jwt=$jwt"
         frameborder="0">
 </iframe>
 </body>

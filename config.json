@@ -1,7 +1,7 @@
 {
     "local": {
         "jwt": "LOCAL-BOT#!",
-        "api_url": "http://localhost:3000"
+        "api_url": "http://localhost:3000/api/"
     },
     "stage": {
         "jwt": "STAGE-BOT#!",

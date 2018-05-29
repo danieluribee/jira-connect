@@ -4,6 +4,8 @@ import com.atlassian.jira.bc.ServiceOutcome;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
+import com.atlassian.jira.issue.status.SimpleStatus;
+import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
@@ -70,20 +72,41 @@ public class StandbotController {
         for (Long id : issueIds) {
             MutableIssue issue = _issueManager.getIssueObject(id);
 
-            if (!issue.getAssigneeId().equals(userId)) {
+            /*
+            isnt assigned or the assigned user isnt the requested user
+             */
+            if (issue.getAssigneeId() == null || issue.getAssigneeId().isEmpty() || !issue.getAssigneeId().equals(userId)) {
+                continue;
+            }
+
+            Status issueStatus = issue.getStatus();
+
+            if (issueStatus == null) {
+                continue;
+            }
+
+            SimpleStatus simpleStatus = issueStatus.getSimpleStatus();
+
+            if (simpleStatus == null) {
+                continue;
+            }
+
+            String statusName = simpleStatus.getName();
+
+            if (statusName == null) {
                 continue;
             }
 
             if (status.equals("done")) {
-                if (!issue.getStatus().getSimpleStatus().getName().equals("Done")) {
+                if (!statusName.equals("Done")) {
                     continue;
                 }
             } else if (status.equals("in-progress")) {
-                if (!issue.getStatus().getSimpleStatus().getName().equals("In Progress")) {
+                if (!statusName.equals("In Progress")) {
                     continue;
                 }
             } else if (status.equals("assigned")) {
-                if (!issue.getStatus().getSimpleStatus().getName().equals("Done") && !issue.getStatus().getSimpleStatus().getName().equals("In Progress")) {
+                if (statusName.equals("Done") || statusName.equals("In Progress")) {
                     continue;
                 }
             }
@@ -102,7 +125,6 @@ public class StandbotController {
         issueList.setIssues(finalList, registeredJiraUrl);
 
         return Response.ok(GSON.toJson(issueList, IssueList.class)).build();
-
     }
 
     private class Priority {

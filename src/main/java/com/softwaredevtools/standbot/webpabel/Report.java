@@ -6,11 +6,13 @@ import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.plugin.web.model.WebPanel;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
+import com.softwaredevtools.standbot.service.JWTService;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Report implements WebPanel {
@@ -18,12 +20,14 @@ public class Report implements WebPanel {
     private final TemplateRenderer templateRenderer;
     private final SlackIntegrationService _slackIntegrationService;
     private ProjectManager _projectManager;
+    private final JWTService _jwtService;
 
 
-    public Report(TemplateRenderer renderer, SlackIntegrationService slackIntegrationService) {
+    public Report(TemplateRenderer renderer, SlackIntegrationService slackIntegrationService, JWTService jwtService) {
         _slackIntegrationService = slackIntegrationService;
         this.templateRenderer = renderer;
         _projectManager = ComponentAccessor.getProjectManager();
+        _jwtService = jwtService;
     }
 
     public String getHtml(Map<String, Object> map) {
@@ -45,8 +49,13 @@ public class Report implements WebPanel {
             return null;
         }
 
+        HashMap<String, Object> data = new HashMap<String, Object>();
+        data.put("clientKey", slackIntegrationEntity.getClientKey());
+        String jwt = _jwtService.sign(data);
+
         map.put("projectId", project.getId());
         map.put("clientKey", slackIntegrationEntity.getClientKey());
+        map.put("jwt", jwt);
 
         StringWriter stringWriter = new StringWriter();
         try {
