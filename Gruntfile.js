@@ -55,7 +55,7 @@ module.exports = function (grunt) {
                     // generate a new atlassian-plugin.xml to replace timestamp
                     {
                         src: './src/main/java/com/softwaredevtools/standbot/config/StandbotConfigTemplate.java',
-                        dest: './src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java',
+                        dest: './src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'
                     }
                 ],
                 options: {
@@ -66,6 +66,14 @@ module.exports = function (grunt) {
                         return content;
                     }
                 }
+            },
+            js: {
+                files: [
+                    {
+                        src: './src/main/resources/configure-app/controllers/SlackTeamControllerTemplate.js',
+                        dest: './src/main/resources/configure-app/controllers/SlackTeamController.js'
+                    }
+                ]
             }
         },
         replace: {
@@ -79,6 +87,10 @@ module.exports = function (grunt) {
                         {
                             match: 'STANDBOT_API_BASE_URL',
                             replacement: config.local.api_url
+                        },
+                        {
+                            match: 'SLACK_CLIENT_ID',
+                            replacement: config.local.slackClientId
                         }
                     ]
                 },
@@ -88,6 +100,12 @@ module.exports = function (grunt) {
                         flatten: true,
                         src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
                         dest: './src/main/java/com/softwaredevtools/standbot/config/'
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['./src/main/resources//configure-app/controllers/SlackTeamController.js'],
+                        dest: './src/main/resources//configure-app/controllers/'
                     }
                 ]
             },
@@ -101,6 +119,10 @@ module.exports = function (grunt) {
                         {
                             match: 'STANDBOT_API_BASE_URL',
                             replacement: config.stage.api_url
+                        },
+                        {
+                            match: 'SLACK_CLIENT_ID',
+                            replacement: config.stage.slackClientId
                         }
                     ]
                 },
@@ -110,6 +132,12 @@ module.exports = function (grunt) {
                         flatten: true,
                         src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
                         dest: './src/main/java/com/softwaredevtools/standbot/config/'
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['./src/main/resources//configure-app/controllers/SlackTeamController.js'],
+                        dest: './src/main/resources//configure-app/controllers/'
                     }
                 ]
             },
@@ -123,6 +151,10 @@ module.exports = function (grunt) {
                         {
                             match: 'STANDBOT_API_BASE_URL',
                             replacement: config.production.api_url
+                        },
+                        {
+                            match: 'SLACK_CLIENT_ID',
+                            replacement: config.production.slackClientId
                         }
                     ]
                 },
@@ -132,6 +164,12 @@ module.exports = function (grunt) {
                         flatten: true,
                         src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
                         dest: './src/main/java/com/softwaredevtools/standbot/config/'
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['./src/main/resources//configure-app/controllers/SlackTeamController.js'],
+                        dest: './src/main/resources//configure-app/controllers/'
                     }
                 ]
             },
@@ -147,14 +185,14 @@ module.exports = function (grunt) {
 
     // Tell Grunt what to do when we type "grunt" into the terminal
     grunt.registerTask('default', [
-        'clean', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config', 'replace:local'
+        'clean', 'copy:js', 'replace:local', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config'
     ]);
 
     grunt.registerTask('stage', [
-        'clean', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config', 'replace:stage'
+        'clean', 'copy:js', 'replace:stage', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config'
     ]);
 
     grunt.registerTask('production', [
-        'clean', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config', 'replace:production'
+        'clean', 'copy:js', 'replace:production', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config'
     ]);
 };

@@ -1,14 +1,17 @@
 {
     "local": {
         "jwt": "LOCAL-BOT#!",
-        "api_url": "http://localhost:3000/api/"
+        "api_url": "http://localhost:3000/api/",
+        "slackClientId": "263257009541.262601405345"
     },
     "stage": {
         "jwt": "STAGE-BOT#!",
-        "api_url": "https://standup-bot-stage.herokuapp.com/"
+        "api_url": "https://standup-bot-stage.herokuapp.com/api/",
+        "slackClientId": "2430445214.245780720839"
     },
     "production": {
-        "jwt": "PRODUCTION-BOT#!",
-        "api_url": "https://nearsoftlabs-standup-bot.herokuapp.com/"
+        "jwt": "=Z)sZs`dAK&C&(@L",
+        "api_url": "https://standbot.softwaredevtools.com/api/",
+        "slackClientId": "2430445214.175981597863"
     }
 }
