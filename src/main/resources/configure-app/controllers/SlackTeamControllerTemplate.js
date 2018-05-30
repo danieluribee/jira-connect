@@ -17,6 +17,9 @@
 
         vm.verifySlackTeam = verifySlackTeam;
         vm.saveStandupsConfiguration = saveStandupsConfiguration;
+        vm.resourcePrefix = function() {
+            return window.standbotEnvironmentLocal ? '/jira' : '';
+        };
 
         _init();
 

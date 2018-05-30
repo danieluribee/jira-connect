@@ -22,6 +22,9 @@
         vm._fetchStandupsAndTeams = _fetchStandupsAndTeams;
         vm.checkSelectedProjects = checkSelectedProjects;
         vm.isSelected = isSelected;
+        vm.resourcePrefix = function() {
+            return window.standbotEnvironmentLocal ? '/jira' : '';
+        };
 
         _init();
 

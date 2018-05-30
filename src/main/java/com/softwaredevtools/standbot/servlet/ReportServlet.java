@@ -3,6 +3,7 @@ package com.softwaredevtools.standbot.servlet;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.templaterenderer.TemplateRenderer;
+import com.softwaredevtools.standbot.config.StandbotConfig;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.service.JWTService;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
@@ -59,6 +60,9 @@ public class ReportServlet extends HttpServlet {
         map.put("standupId", standupId);
         map.put("clientKey", slackIntegrationEntity.getClientKey());
         map.put("jwt", jwt);
+        map.put("isLocal", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.LOCAL));
+        map.put("isStage", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.STAGE));
+        map.put("isProduction", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.PRODUCTION));
 
         renderer.render("templates/report.vm", map, response.getWriter());
     }

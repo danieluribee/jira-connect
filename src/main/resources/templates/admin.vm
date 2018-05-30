@@ -1,14 +1,28 @@
 <html>
-    <head>
-        <meta name="client_key" content="$clientKey">
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js" type="text/javascript"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js" type="text/javascript"></script>
-        <script src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/main.js" type="text/javascript"></script>
-    </head>
-    <body>
-        <div ng-app="JiraSettingsApp">
-            <div ng-view=""></div>
-        </div>
-    </body>
+<head>
+    <meta name="client_key" content="$clientKey">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js"
+            type="text/javascript"></script>
+
+    #if ($isLocal)
+        <script src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/main.js"
+                type="text/javascript"></script>
+        <script>
+            window.standbotEnvironmentLocal = true;
+        </script>
+    #else
+        <script src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/main.js"
+                type="text/javascript"></script>
+        <script>
+            window.standbotEnvironmentLocal = false;
+        </script>
+    #end
+</head>
+<body>
+<div ng-app="JiraSettingsApp">
+    <div ng-view=""></div>
+</div>
+</body>
 </html>
 

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.templaterenderer.TemplateRenderer;
+import com.softwaredevtools.standbot.config.StandbotConfig;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
 
@@ -41,6 +42,7 @@ public class ConfigureServlet extends HttpServlet {
         HashMap<String, Object> map = new HashMap();
 
         map.put("clientKey", slackIntegrationEntity.getClientKey());
+        map.put("isLocal", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.LOCAL));
 
         renderer.render("templates/admin.vm", map, response.getWriter());
     }

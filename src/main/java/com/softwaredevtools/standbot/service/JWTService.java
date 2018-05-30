@@ -27,6 +27,7 @@ public class JWTService {
         //Let's set the JWT Claims
         JwtBuilder builder = null;
         builder = Jwts.builder()
+                .setIssuer("jira server addon")
                 .setClaims(data)
                 .setIssuedAt(now)
                 .signWith(signatureAlgorithm, StandbotConfig.JWT_SECRET.getBytes());

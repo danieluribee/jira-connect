@@ -6,6 +6,7 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.gson.Gson;
 import com.softwaredevtools.standbot.SlackRelationVerificationResponse;
+import com.softwaredevtools.standbot.config.StandbotConfig;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
 import com.softwaredevtools.standbot.service.StandbotAPI;
@@ -56,6 +57,7 @@ public class UserRelationConfirmServlet extends HttpServlet {
         if (slackUserId != null && slackTeamId != null && !slackUserId.isEmpty() && !slackTeamId.isEmpty()) {
             map.put("slackUserId", slackUserId);
             map.put("slackTeamId", slackTeamId);
+            map.put("isLocal", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.LOCAL));
 
             try {
                 ApplicationUser user = _slackIntegrationService.getConfluenceUser();

@@ -2,34 +2,59 @@
 <head>
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui.css" media="all">
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui-experimental.css" media="all">
-    <link rel="stylesheet" href="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css"></link>
+    #if ($isLocal)
+        <link rel="stylesheet"
+              href="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css"></link>
+    #else
+        <link rel="stylesheet"
+              href="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css"></link>
+    #end
 </head>
 <body>
 <div class="aui-page-panel main-panel" style="margin-top: 0; border: none;">
-<div class="aui-page-panel-inner">
-<section class="aui-page-panel-item">
-    <h1 style="margin: 40px 0;">Stand-up bot for Slack</h1>
-<div class="aui-page-panel main-panel" style="margin-top: 0; border: none;">
-<div ng-hide="vm.loading" style="margin-bottom: 40px;">
-    #if ($standbotResponse.wasVerified == true)
-    <div style="overflow: hidden">
-        <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-explain-setup.png" alt="">
+    <div class="aui-page-panel-inner">
+        <section class="aui-page-panel-item">
+            <h1 style="margin: 40px 0;">Stand-up bot for Slack</h1>
+            <div class="aui-page-panel main-panel" style="margin-top: 0; border: none;">
+                <div ng-hide="vm.loading" style="margin-bottom: 40px;">
+                    #if ($standbotResponse.wasVerified == true)
+                        <div style="overflow: hidden">
+                            #if ($isLocal)
+                                <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-explain-setup.png"
+                                     alt="">
+                            #else
+                                <img src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-explain-setup.png"
+                                     alt="">
+                            #end
+                        </div>
+                        <div style="clear: both; margin-top: 20px; padding-left: 114px;">
+                            #if ($isLocal)
+                                <a id="btn-verify-slack-team" target="_top" class="aui-button aui-button-primary"
+                                   href="/jira/plugins/servlet/standbot/configure?slackSubdomain=$standbotResponse.domain">
+                                    Go to Settings
+                                </a>
+                            #else
+                                <a id="btn-verify-slack-team" target="_top" class="aui-button aui-button-primary"
+                                   href="/plugins/servlet/standbot/configure?slackSubdomain=$standbotResponse.domain">
+                                    Go to Settings
+                                </a>
+                            #end
+                        </div>
+                    #else
+                        <div style="overflow: hidden">
+                            #if ($isLocal)
+                                <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-congrats-user-link.png"
+                                     alt="">
+                            #else
+                                <img src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-congrats-user-link.png"
+                                     alt="">
+                            #end
+                        </div>
+                    #end
+                </div>
+            </div>
+        </section>
     </div>
-    <div style="clear: both; margin-top: 20px; padding-left: 114px;">
-        <a id="btn-verify-slack-team" target="_top" class="aui-button aui-button-primary"
-           href="/jira/plugins/servlet/standbot/configure?slackSubdomain=$standbotResponse.domain">
-            Go to Settings
-        </a>
-    </div>
-    #else
-    <div style="overflow: hidden">
-        <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-congrats-user-link.png" alt="">
-    </div>
-    #end
-</div>
-</div>
-</section>
-</div>
 </div>
 
 </body>

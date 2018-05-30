@@ -1,6 +1,6 @@
 (function (angular) {
     angular.module('JiraSettingsApp', ['ngRoute'])
-        .constant('SERVER_BASE_URL', 'http://localhost:2990/jira/rest/standbot/latest')
+        .constant('SERVER_BASE_URL', `${window.location.href.split('/plugins')[0]}/rest/standbot/latest`)
         .constant('HOST_BASE_URL', window.location.href.split('/plugins')[0])
         .factory('hostBaseUrlInterceptor', function (HOST_BASE_URL) {
             return {

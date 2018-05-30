@@ -4,5 +4,9 @@
 
     function SlackVerifyController() {
         var vm = this;
+
+        vm.resourcePrefix = function() {
+            return window.standbotEnvironmentLocal ? '/jira' : '';
+        };
     }
 })(window.angular);

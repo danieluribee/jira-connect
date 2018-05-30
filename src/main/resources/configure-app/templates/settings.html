@@ -3,13 +3,13 @@
 </div>
 <div ng-show="!vm.loading && !vm.standups.length" style="margin-bottom: 40px;" >
     <div style="overflow: hidden">
-        <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-setup-instructions.png" alt="">
+        <img src="{{vm.resourcePrefix()}}/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-setup-instructions.png" alt="">
     </div>
 </div>
 
 <div ng-show="!vm.loading && vm.standups.length" style="margin-bottom: 40px;" >
     <div style="overflow: hidden">
-        <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-choose-project.png" alt="">
+        <img src="{{vm.resourcePrefix()}}/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-choose-project.png" alt="">
     </div>
 
     <table class="aui" style="margin-top: 30px" >
@@ -35,6 +35,6 @@
         <button id="btn-verify-slack-team" class="aui-button aui-button-primary" ng-click="vm.saveStandupsConfiguration()">
             Save
         </button>
-        <span ng-show="vm.saved" style="display: inline-block; margin-left: 10px;">Saved <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/icon-green-checkmark.png" style="margin-bottom: -3px" alt=""></span>
+        <span ng-show="vm.saved" style="display: inline-block; margin-left: 10px;">Saved <img src="{{vm.resourcePrefix()}}/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/icon-green-checkmark.png" style="margin-bottom: -3px" alt=""></span>
     </p>
 </div>

@@ -15,7 +15,9 @@ module.exports = function (grunt) {
             dist: {
                 src: [
                     CWD + '/app.js',
-                    CWD + '/controllers/*.js',
+                    CWD + '/controllers/SettingsController.js',
+                    CWD + '/controllers/SlackTeamController.js',
+                    CWD + '/controllers/SlackVerifyController.js',
                     CWD + '/temp/*.js',
                 ],
                 dest: CWD + '/build/main.js',
@@ -81,26 +83,12 @@ module.exports = function (grunt) {
                 options: {
                     patterns: [
                         {
-                            match: 'JWT_SECRET',
-                            replacement: config.local.jwt
-                        },
-                        {
-                            match: 'STANDBOT_API_BASE_URL',
-                            replacement: config.local.api_url
-                        },
-                        {
                             match: 'SLACK_CLIENT_ID',
                             replacement: config.local.slackClientId
                         }
                     ]
                 },
                 files: [
-                    {
-                        expand: true,
-                        flatten: true,
-                        src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
-                        dest: './src/main/java/com/softwaredevtools/standbot/config/'
-                    },
                     {
                         expand: true,
                         flatten: true,
@@ -113,26 +101,12 @@ module.exports = function (grunt) {
                 options: {
                     patterns: [
                         {
-                            match: 'JWT_SECRET',
-                            replacement: config.stage.jwt
-                        },
-                        {
-                            match: 'STANDBOT_API_BASE_URL',
-                            replacement: config.stage.api_url
-                        },
-                        {
                             match: 'SLACK_CLIENT_ID',
                             replacement: config.stage.slackClientId
                         }
                     ]
                 },
                 files: [
-                    {
-                        expand: true,
-                        flatten: true,
-                        src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
-                        dest: './src/main/java/com/softwaredevtools/standbot/config/'
-                    },
                     {
                         expand: true,
                         flatten: true,
@@ -145,14 +119,6 @@ module.exports = function (grunt) {
                 options: {
                     patterns: [
                         {
-                            match: 'JWT_SECRET',
-                            replacement: config.production.jwt
-                        },
-                        {
-                            match: 'STANDBOT_API_BASE_URL',
-                            replacement: config.production.api_url
-                        },
-                        {
                             match: 'SLACK_CLIENT_ID',
                             replacement: config.production.slackClientId
                         }
@@ -162,14 +128,86 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         flatten: true,
-                        src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
-                        dest: './src/main/java/com/softwaredevtools/standbot/config/'
-                    },
+                        src: ['./src/main/resources//configure-app/controllers/SlackTeamController.js'],
+                        dest: './src/main/resources//configure-app/controllers/'
+                    }
+                ]
+            },
+            config_local: {
+                options: {
+                    patterns: [
+                        {
+                            match: 'JWT_SECRET',
+                            replacement: config.local.jwt
+                        },
+                        {
+                            match: 'STANDBOT_API_BASE_URL',
+                            replacement: config.local.api_url
+                        },
+                        {
+                            match: 'ENVIRONMENT',
+                            replacement: "LOCAL"
+                        }
+                    ]
+                },
+                files: [
                     {
                         expand: true,
                         flatten: true,
-                        src: ['./src/main/resources//configure-app/controllers/SlackTeamController.js'],
-                        dest: './src/main/resources//configure-app/controllers/'
+                        src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
+                        dest: './src/main/java/com/softwaredevtools/standbot/config/'
+                    }
+                ]
+            },
+            config_stage: {
+                options: {
+                    patterns: [
+                        {
+                            match: 'JWT_SECRET',
+                            replacement: config.stage.jwt
+                        },
+                        {
+                            match: 'STANDBOT_API_BASE_URL',
+                            replacement: config.stage.api_url
+                        },
+                        {
+                            match: 'ENVIRONMENT',
+                            replacement: "STAGE"
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
+                        dest: './src/main/java/com/softwaredevtools/standbot/config/'
+                    }
+                ]
+            },
+            config_production: {
+                options: {
+                    patterns: [
+                        {
+                            match: 'JWT_SECRET',
+                            replacement: config.production.jwt
+                        },
+                        {
+                            match: 'STANDBOT_API_BASE_URL',
+                            replacement: config.production.api_url
+                        },
+                        {
+                            match: 'ENVIRONMENT',
+                            replacement: "PRODUCTION"
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['./src/main/java/com/softwaredevtools/standbot/config/StandbotConfig.java'],
+                        dest: './src/main/java/com/softwaredevtools/standbot/config/'
                     }
                 ]
             },
@@ -185,14 +223,14 @@ module.exports = function (grunt) {
 
     // Tell Grunt what to do when we type "grunt" into the terminal
     grunt.registerTask('default', [
-        'clean', 'copy:js', 'replace:local', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config'
+        'clean', 'copy:js', 'replace:local', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config', 'replace:config_local',
     ]);
 
     grunt.registerTask('stage', [
-        'clean', 'copy:js', 'replace:stage', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config'
+        'clean', 'copy:js', 'replace:stage', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config', 'replace:config_stage'
     ]);
 
     grunt.registerTask('production', [
-        'clean', 'copy:js', 'replace:production', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config'
+        'clean', 'copy:js', 'replace:production', 'ngtemplates', 'concat:vendor', 'concat:dist', 'copy:config', 'replace:config_production'
     ]);
 };
