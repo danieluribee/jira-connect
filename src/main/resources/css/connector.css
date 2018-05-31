@@ -6,3 +6,188 @@ html, body {
     background-size: contain;
     background-image: url("/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources-general/images/icon-standup.png"), url("/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources-general/images/icon-standup.png");
 }
+
+/* add-on styles */
+.intro-header h1 {
+    font-size: 48px;
+    line-height: 60px;
+    padding-top: 20px;
+}
+.intro-header p.subtitle {
+    font-size: 24px;
+    line-height: 30px;
+    padding-bottom: 20px;
+}
+.main-panel .aui-page-panel-item {
+    padding: 20px 40px 20px 0;
+    height: 100px;
+}
+
+.aui-page-panel-inner.header {
+    margin-bottom: 40px;
+}
+
+.aui-page-panel-inner.header .aui-page-panel-item {
+    padding-bottom: 40px;
+    border-bottom: inset 1px #E1E1E1;
+}
+
+.aui-page-panel-inner.header .aui-page-panel-item .logo {
+    height: 40px;
+    top: 10px;
+    position: relative;
+}
+
+.aui-page-panel-inner.header .aui-page-panel-item ul {
+    list-style: none;
+    display: table;
+    width: 100%;
+    padding: 0;
+    table-layout: fixed;
+}
+
+.aui-page-panel-inner.header .aui-page-panel-item ul li {
+    display: table-cell;
+    text-align: center;
+}
+
+.aui-page-panel-inner.header .aui-page-panel-item ul li:first-of-type {
+    float: left;
+}
+
+.aui-page-panel-inner.header .aui-page-panel-item ul li:last-of-type {
+    float: right;
+}
+
+.aui-page-panel-inner.header .aui-page-panel-item ul li h1 {
+    color: #205081;
+    font-size: 30px;
+    font-style: italic;
+    font-weight: 800;
+}
+
+.main-panel .aui-group.settings {
+    margin-top: 30px;
+    margin-bottom: 22px;
+}
+
+.main-panel .aui-group .aui-item.message {
+    text-align: center;
+}
+
+.main-panel .aui-group .aui-item.message ul {
+    text-align: left;
+    display: inline-table;
+}
+
+.main-panel .aui-group .aui-item.message ul li {
+    margin: 2px 0;
+}
+
+.not-connected .aui-group.title {
+    margin: 20px 0;
+}
+
+.not-connected .aui-group.more-info {
+    margin-top: 22px;
+}
+
+.status-user{
+    font-family:  Helvetica,Arial, sans-serif;
+
+}
+.label{
+    font-family: Helvetica;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    color: #333333;
+}
+.contenent{
+    font-family: Helvetica;
+    display: inline-block;
+    font-size: 12px;
+    line-height: 20px;
+    color: #707070;
+}
+.datestandup{
+
+    font-family: Helvetica;
+    font-size: 20px;
+    line-height: 24px;
+    color: #333333;
+}
+.owner{
+    float: left;
+    margin-right: 64px;
+}
+.statustodayyesterday{
+    float: left;
+}
+.yesterday{
+    float: left;
+    border-left: 3px solid;
+    border-color: rgba(147, 196, 125, 1.0);
+    padding-left: 10px;
+    margin-right: 35px;
+}
+.today{
+    float: left;
+    border-left: 3px solid;
+    border-color: rgba(136, 209, 244, 1.0);
+    padding-left: 10px;
+}
+.blockers{
+    margin-top: 7.5%;
+    float: left;
+    border-left: 3px solid;
+    border-color: rgba(255, 0, 0, 1.0);
+    padding-left: 3px;
+    width: 315px;
+    max-height: 40px;
+    font-family: Helvetica;
+    font-size: 12px;
+    line-height: 20px;
+    min-height: 20px;
+}
+
+.user{
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 3px;
+    max-width: 900px;
+    min-width: 300px;
+    min-height: 100px;
+    padding-top: 40px;
+    padding-left: 40px;
+    padding-bottom: 100px;
+    margin-top: 20px;
+    overflow:hidden;
+}
+
+.img-circle {
+    border-radius: 50%;
+    padding-right: 2px;
+    max-width: 123.33px;
+    max-height: 116.67px;
+}
+.center{
+    text-align: center;
+}
+* {
+    box-sizing: border-box;
+}
+
+
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}

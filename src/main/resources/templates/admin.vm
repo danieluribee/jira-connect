@@ -1,6 +1,9 @@
 <html>
 <head>
     <meta name="client_key" content="$clientKey">
+    <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui.css" media="all">
+    <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui-experimental.css" media="all">
+    <link src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js"
             type="text/javascript"></script>
@@ -19,7 +22,7 @@
         </script>
     #end
 </head>
-<body>
+<body style="margin: 77px 200px; background-color: white;">
 <div ng-app="JiraSettingsApp">
     <div ng-view=""></div>
 </div>

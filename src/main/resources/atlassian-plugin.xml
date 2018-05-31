@@ -45,6 +45,10 @@
         <url-pattern>/standbot/configure</url-pattern>
     </servlet>
 
+    <servlet name="Standbot configure link project level" key="standbotconfigurepagelinkproject" class="com.softwaredevtools.standbot.servlet.ConfigureServlet">
+        <url-pattern>/ac/slack-standup-bot-jira/standup-config-page-jira</url-pattern>
+    </servlet>
+
     <servlet name="Standbot user relation" key="standbotuserrelation" class="com.softwaredevtools.standbot.servlet.UserRelationServlet">
         <url-pattern>/standbot/user-relation</url-pattern>
     </servlet>

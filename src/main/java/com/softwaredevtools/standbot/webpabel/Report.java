@@ -5,6 +5,7 @@ import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.plugin.web.model.WebPanel;
 import com.atlassian.templaterenderer.TemplateRenderer;
+import com.softwaredevtools.standbot.config.StandbotConfig;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.service.JWTService;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
@@ -49,13 +50,19 @@ public class Report implements WebPanel {
             return null;
         }
 
+        String url = ComponentAccessor.getApplicationProperties().getString("jira.baseurl");
+
         HashMap<String, Object> data = new HashMap<String, Object>();
         data.put("clientKey", slackIntegrationEntity.getClientKey());
+        data.put("hostBaseUrl", url);
         String jwt = _jwtService.sign(data);
 
         map.put("projectId", project.getId());
         map.put("clientKey", slackIntegrationEntity.getClientKey());
         map.put("jwt", jwt);
+        map.put("isLocal", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.LOCAL));
+        map.put("isStage", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.STAGE));
+        map.put("isProduction", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.PRODUCTION));
 
         StringWriter stringWriter = new StringWriter();
         try {

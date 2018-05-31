@@ -2,6 +2,7 @@
 <head>
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui.css" media="all">
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui-experimental.css" media="all">
+    <link src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css">
     #if ($isLocal)
         <link rel="stylesheet"
               href="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css"></link>
@@ -10,7 +11,7 @@
               href="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css"></link>
     #end
 </head>
-<body>
+<body style="margin: 77px 200px; background-color: white;">
 <div class="aui-page-panel main-panel" style="margin-top: 0; border: none;">
     <div class="aui-page-panel-inner">
         <section class="aui-page-panel-item">

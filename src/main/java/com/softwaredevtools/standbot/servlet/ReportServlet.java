@@ -50,8 +50,16 @@ public class ReportServlet extends HttpServlet {
         String slackTeamId = request.getParameter("ac.slackTeamId");
         String standupId = request.getParameter("ac.standupId");
 
+        String url;
+        try {
+            url = request.getRequestURL().toString().split("/plugins")[0];
+        } catch (Exception e) {
+            url = "";
+        }
+
         HashMap<String, Object> data = new HashMap<String, Object>();
         data.put("clientKey", slackIntegrationEntity.getClientKey());
+        data.put("hostBaseUrl", url);
         String jwt = _jwtService.sign(data);
 
         map.put("projectId", projectId);
