@@ -1,5 +1,8 @@
 package com.softwaredevtools.standbot.servlet;
 
+import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.templaterenderer.TemplateRenderer;
@@ -24,13 +27,14 @@ public class ReportServlet extends HttpServlet {
 
     private final SlackIntegrationService _slackIntegrationService;
     private final JWTService _jwtService;
-
+    private ProjectManager _projectManager;
 
     @Inject
     public ReportServlet(TemplateRenderer renderer, SlackIntegrationService slackIntegrationService, JWTService jwtService) {
         _slackIntegrationService = slackIntegrationService;
         this.renderer = renderer;
         _jwtService = jwtService;
+        _projectManager = ComponentAccessor.getProjectManager();
     }
 
     @Override
@@ -43,36 +47,16 @@ public class ReportServlet extends HttpServlet {
 
         response.setContentType("text/html;charset=utf-8");
 
-        HashMap<String, Object> map = new HashMap();
-
         String projectId = request.getParameter("project.id");
-        String slackChannelId = request.getParameter("ac.slackChannelId");
-        String slackTeamId = request.getParameter("ac.slackTeamId");
-        String standupId = request.getParameter("ac.standupId");
 
-        String url;
-        try {
-            url = request.getRequestURL().toString().split("/plugins")[0];
-        } catch (Exception e) {
-            url = "";
+        Project project = _projectManager.getProjectObj(Long.parseLong(projectId));
+
+        if (project == null) {
+            response.sendError(404, "Project not found");
+        } else {
+            String baseUrl = ComponentAccessor.getApplicationProperties().getString("jira.baseurl");
+            response.sendRedirect(baseUrl + "/projects/" +  project.getKey() + "?selectedItem=stand-bot-slack-stand-up-bot-for-jira:standbotreport-project-render");
         }
-
-        HashMap<String, Object> data = new HashMap<String, Object>();
-        data.put("clientKey", slackIntegrationEntity.getClientKey());
-        data.put("hostBaseUrl", url);
-        String jwt = _jwtService.sign(data);
-
-        map.put("projectId", projectId);
-        map.put("slackChannelId", slackChannelId);
-        map.put("slackTeamId", slackTeamId);
-        map.put("standupId", standupId);
-        map.put("clientKey", slackIntegrationEntity.getClientKey());
-        map.put("jwt", jwt);
-        map.put("isLocal", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.LOCAL));
-        map.put("isStage", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.STAGE));
-        map.put("isProduction", StandbotConfig.ENVIRONMENT.equals(StandbotConfig.PRODUCTION));
-
-        renderer.render("templates/report.vm", map, response.getWriter());
     }
 
 }
