@@ -1,6 +1,7 @@
 package com.softwaredevtools.standbot.webpabel;
 
 import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.plugin.web.model.WebPanel;
