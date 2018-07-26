@@ -73,7 +73,7 @@ public class StandbotAPI {
         return makeHttpCall(
                 StandbotConfig.STANDBOT_API_BASE_URL + "jira-instances/current/relations?jwt=" + jwt,
                 "POST",
-                "{\"team_id\":\"" + teamId + "\"}"
+                "{\"relation_id\":\"" + teamId + "\"}"
         );
     }
 

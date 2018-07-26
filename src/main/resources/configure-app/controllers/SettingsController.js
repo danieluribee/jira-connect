@@ -2,7 +2,7 @@
     angular.module('JiraSettingsApp')
         .controller('SettingsController', SettingsController);
 
-    SettingsController.$inject = ['SERVER_BASE_URL', '$http', '$q', '$window','$log', '$location'];
+    SettingsController.$inject = ['SERVER_BASE_URL', '$http', '$q', '$window', '$log', '$location'];
 
     function SettingsController(SERVER_BASE_URL, $http, $q, $window, $log, $location) {
         var vm = this;
@@ -22,7 +22,7 @@
         vm._fetchStandupsAndTeams = _fetchStandupsAndTeams;
         vm.checkSelectedProjects = checkSelectedProjects;
         vm.isSelected = isSelected;
-        vm.resourcePrefix = function() {
+        vm.resourcePrefix = function () {
             return window.standbotEnvironmentLocal ? '/jira' : '';
         };
 
@@ -32,14 +32,14 @@
             $http.get(SERVER_BASE_URL + '/slack/relations').then(function (relationsData) {
                 $log.log(relationsData, relationsData.data.length);
                 if (relationsData.data && relationsData.data.length > 0) {
-                    vm.slackTeamId = relationsData.data[0].slack_team_id;
+                    vm.slackTeamId = relationsData.data[0].messaging.slack_data.team_id;
 
                     $http.get(SERVER_BASE_URL + '/slack/teams/' + vm.slackTeamId).then(function (teamData) {
-                        vm.slackTeamName = teamData.data.team_name;
-                        vm.slackSubdomain = teamData.data.domain;
-                    });
+                        vm.slackTeamName = teamData.data.slack_data.team_name;
+                        vm.slackSubdomain = teamData.data.slack_data.domain;
 
-                    _fetchStandupsAndTeams();
+                        _fetchStandupsAndTeams();
+                    });
                 } else {
                     $location.path('/');
                 }
@@ -47,23 +47,25 @@
         }
 
         function _fetchStandupsAndTeams() {
-            var standupsPromise = $http.get(SERVER_BASE_URL + '/slack/teams/' + vm.slackTeamId + '/standups').then(function (standupsResult) {
-                vm.standups = standupsResult.data;
-            });
-            var projectsPromise = $http.get(SERVER_BASE_URL + '/jira/projects').then(function (projectsResult) {
-                vm.projects = projectsResult.data.map(function(project) {
-                    return {
-                        id: project.id,
-                        name: project.projectGV.name
-                    }
+            var standupsPromise = $http.get(SERVER_BASE_URL + '/slack/teams/' + vm.slackTeamId + '/standups')
+                .then(function (standupsResult) {
+                    vm.standups = standupsResult.data;
                 });
-                $log.log(vm.projects);
-            });
+            var projectsPromise = $http.get(SERVER_BASE_URL + '/jira/projects')
+                .then(function (projectsResult) {
+                    vm.projects = projectsResult.data.map(function (project) {
+                        return {
+                            id: project.id,
+                            name: project.projectGV.name
+                        }
+                    });
+                    $log.log(vm.projects);
+                });
 
             $q.all([
-                standupsPromise,
-                projectsPromise
-            ])
+                    standupsPromise,
+                    projectsPromise
+                ])
                 .then(function () {
                     for (var idx in vm.standups) {
                         if (!vm.standups[idx].jira_project_id) {
@@ -77,7 +79,7 @@
         }
 
         function checkSelectedProjects() {
-            vm.selectedProjects = vm.standups.map(function(standup) {
+            vm.selectedProjects = vm.standups.map(function (standup) {
                 return standup.jira_project_id ? standup.jira_project_id : undefined;
             });
         }
@@ -92,10 +94,10 @@
 
         function saveStandupsConfiguration() {
             var promises = vm.standups.map(function (standup) {
-                /** 
+                /**
                  * If jira_project_id == 0, we should send a DELETE but is not yet implemented
-                */
-                return $http.post(SERVER_BASE_URL + '/jira/projects/' + standup.jira_project_id + '/standups?channelId=' + standup.channel_id + '&teamId=' + vm.slackTeamId);
+                 */
+                return $http.post(SERVER_BASE_URL + '/jira/projects/' + standup.jira_project_id + '/standups?channelId=' + standup.platform_conversation_id + '&teamId=' + vm.slackTeamId);
             });
 
             $q.all(promises).then(function () {

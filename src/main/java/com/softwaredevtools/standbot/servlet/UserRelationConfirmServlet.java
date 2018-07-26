@@ -65,7 +65,7 @@ public class UserRelationConfirmServlet extends HttpServlet {
                 String standbotResponse = _standbotAPI.verifyRelation(slackIntegrationEntity.getClientKey(), userKey, request.getLocalName(), slackUserId, slackTeamId);
                 SlackRelationVerificationResponse slackRelationVerificationResponse = GSON.fromJson(standbotResponse, SlackRelationVerificationResponse.class);
 
-                if (slackRelationVerificationResponse.isWasVerified()) {
+                if (slackRelationVerificationResponse.isVerified()) {
                     slackIntegrationEntity.setActive(true);
                     slackIntegrationEntity.save();
                 }

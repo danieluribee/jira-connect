@@ -18,7 +18,7 @@
             <h1 style="margin: 40px 0;">Stand-up bot for Slack</h1>
             <div class="aui-page-panel main-panel" style="margin-top: 0; border: none;">
                 <div ng-hide="vm.loading" style="margin-bottom: 40px;">
-                    #if ($standbotResponse.wasVerified == true)
+                    #if ($standbotResponse.verified == true)
                         <div style="overflow: hidden">
                             #if ($isLocal)
                                 <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-explain-setup.png"
@@ -31,7 +31,7 @@
                         <div style="clear: both; margin-top: 20px; padding-left: 114px;">
                             #if ($isLocal)
                                 <a id="btn-verify-slack-team" target="_top" class="aui-button aui-button-primary"
-                                   href="/jira/plugins/servlet/standbot/configure?slackSubdomain=$standbotResponse.domain">
+                                   href="/jira/plugins/servlet/standbot/configure?slackSubdomain=$standbotResponse.messaging.slack_data.domain">
                                     Go to Settings
                                 </a>
                             #else

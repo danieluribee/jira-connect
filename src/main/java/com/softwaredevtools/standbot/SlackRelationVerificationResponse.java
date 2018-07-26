@@ -1,22 +1,22 @@
 package com.softwaredevtools.standbot;
 
 public class SlackRelationVerificationResponse {
-    private boolean wasVerified;
-    private String domain;
+    private boolean verified;
+    private Messaging messaging;
 
-    public String getDomain() {
-        return domain;
+    public Messaging getMessaging() {
+        return messaging;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setMessaging(Messaging messaging) {
+        this.messaging = messaging;
     }
 
-    public void setWasVerified(boolean wasVerified) {
-        this.wasVerified = wasVerified;
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
-    public boolean isWasVerified() {
-        return wasVerified;
+    public boolean isVerified() {
+        return verified;
     }
 }
