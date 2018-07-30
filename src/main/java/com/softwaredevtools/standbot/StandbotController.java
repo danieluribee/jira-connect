@@ -1,14 +1,21 @@
 package com.softwaredevtools.standbot;
 
 import com.atlassian.jira.bc.ServiceOutcome;
+import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
+import com.atlassian.jira.issue.search.SearchException;
+import com.atlassian.jira.issue.search.SearchRequest;
 import com.atlassian.jira.issue.status.SimpleStatus;
 import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
+import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.google.gson.reflect.TypeToken;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
@@ -37,11 +44,15 @@ public class StandbotController {
     private ProjectManager _projectManager;
     private IssueManager _issueManager;
     private JWTService _jwtService;
+    private SearchService _searchService;
 
-    public StandbotController(SlackIntegrationService slackIntegrationService, StandbotAPI standbotAPI, JWTService jwtService) {
+    public StandbotController(SlackIntegrationService slackIntegrationService, StandbotAPI standbotAPI, JWTService jwtService,
+                              @ComponentImport SearchService searchService) {
+        _searchService = searchService;
         _slackIntegrationService = slackIntegrationService;
         _standbotAPI = standbotAPI;
         GSON = new Gson();
+
         _projectManager = ComponentAccessor.getProjectManager();
         _issueManager = ComponentAccessor.getIssueManager();
         _jwtService = jwtService;
@@ -64,63 +75,36 @@ public class StandbotController {
     @Path("search")
     public Response search(@QueryParam("projectId") Long projectId, @QueryParam("userId") String userId,
                            @QueryParam("status") String status, @QueryParam("maxResults") String maxResults,
-                           @QueryParam("registeredJiraUrl") String registeredJiraUrl) throws GenericEntityException {
-        //option: done, in-progress, assigned
-        Collection<Long> issueIds = _issueManager.getIssueIdsForProject(projectId);
-        List<MutableIssue> issues = new ArrayList<MutableIssue>();
+                           @QueryParam("registeredJiraUrl") String registeredJiraUrl) throws GenericEntityException, SearchException {
+        ApplicationUser user = ComponentAccessor.getUserManager().getUser(userId);
 
-        for (Long id : issueIds) {
-            MutableIssue issue = _issueManager.getIssueObject(id);
+        String jqlStatus = "";
 
-            /*
-            isnt assigned or the assigned user isnt the requested user
-             */
-            if (issue.getAssigneeId() == null || issue.getAssigneeId().isEmpty() || !issue.getAssigneeId().equals(userId)) {
-                continue;
-            }
-
-            Status issueStatus = issue.getStatus();
-
-            if (issueStatus == null) {
-                continue;
-            }
-
-            SimpleStatus simpleStatus = issueStatus.getSimpleStatus();
-
-            if (simpleStatus == null) {
-                continue;
-            }
-
-            String statusName = simpleStatus.getName();
-
-            if (statusName == null) {
-                continue;
-            }
-
-            if (status.equals("done")) {
-                if (!statusName.equals("Done")) {
-                    continue;
-                }
-            } else if (status.equals("in-progress")) {
-                if (!statusName.equals("In Progress")) {
-                    continue;
-                }
-            } else if (status.equals("assigned")) {
-                if (statusName.equals("Done") || statusName.equals("In Progress")) {
-                    continue;
-                }
-            }
-
-            issues.add(issue);
+        if (status.equals("done")) {
+            jqlStatus = "statusCategory = \"Done\"";
+        } else if (status.equals("in-progress")) {
+            jqlStatus = "statusCategory = \"In Progress\"";
+        } else if (status.equals("assigned")) {
+            jqlStatus = "statusCategory != \"Done\" and statusCategory != \"In Progress\"";
         }
 
-        Collections.sort(issues, new Comparator<MutableIssue>() {
-            public int compare(MutableIssue o1, MutableIssue o2) {
+        String jql = "project = " + projectId + " and " + jqlStatus + " and assignee = currentUser() ORDER BY updated DESC";
+
+        final SearchService.ParseResult parseResult = _searchService.parseQuery(user, jql);
+
+        if (!parseResult.isValid()) {
+            throw new IllegalArgumentException("Invalid JQL query specified for chart '" + jql + "'.");
+        }
+
+        List<Issue> issues = _searchService.search(user, parseResult.getQuery(), new PagerFilter(5)).getIssues();
+
+        Collections.sort(issues, new Comparator<Issue>() {
+            public int compare(Issue o1, Issue o2) {
                 return o2.getUpdated().compareTo(o2.getUpdated());
             }
         });
 
-        List<MutableIssue> finalList = issues.subList(0, issues.size() >= 5 ? 5 : issues.size());
+        List<Issue> finalList = issues.subList(0, issues.size() >= 5 ? 5 : issues.size());
         IssueList issueList = new IssueList();
         issueList.setIssues(finalList, registeredJiraUrl);
 
@@ -157,14 +141,14 @@ public class StandbotController {
         }
     }
 
-    private class Issue {
+    private class CustomIssue {
         private String key;
         private Long id;
         private String status;
         private String self;
         private Fields fields;
 
-        public Issue(MutableIssue issue, String registeredJiraUrl) {
+        public CustomIssue(Issue issue, String registeredJiraUrl) {
             key = issue.getKey();
             id = issue.getId();
             status = issue.getStatus().getSimpleStatus().getName();
@@ -186,17 +170,17 @@ public class StandbotController {
     }
 
     private class IssueList {
-        private List<Issue> issues;
+        private List<CustomIssue> issues;
 
-        public List<Issue> getIssues() {
+        public List<CustomIssue> getIssues() {
             return issues;
         }
 
-        public void setIssues(List<MutableIssue> issues, String registeredJiraUrl) {
-            this.issues = new ArrayList<Issue>(issues.size());
+        public void setIssues(List<Issue> issues, String registeredJiraUrl) {
+            this.issues = new ArrayList<CustomIssue>(issues.size());
 
-            for (MutableIssue originalIssue : issues) {
-                this.issues.add(new Issue(originalIssue, registeredJiraUrl));
+            for (Issue originalIssue : issues) {
+                this.issues.add(new CustomIssue(originalIssue, registeredJiraUrl));
             }
         }
     }
