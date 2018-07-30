@@ -98,15 +98,8 @@ public class StandbotController {
 
         List<Issue> issues = _searchService.search(user, parseResult.getQuery(), new PagerFilter(5)).getIssues();
 
-        Collections.sort(issues, new Comparator<Issue>() {
-            public int compare(Issue o1, Issue o2) {
-                return o2.getUpdated().compareTo(o2.getUpdated());
-            }
-        });
-
-        List<Issue> finalList = issues.subList(0, issues.size() >= 5 ? 5 : issues.size());
         IssueList issueList = new IssueList();
-        issueList.setIssues(finalList, registeredJiraUrl);
+        issueList.setIssues(issues, registeredJiraUrl);
 
         return Response.ok(GSON.toJson(issueList, IssueList.class)).build();
     }
