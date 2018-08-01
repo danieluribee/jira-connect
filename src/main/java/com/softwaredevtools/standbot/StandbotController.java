@@ -1,15 +1,10 @@
 package com.softwaredevtools.standbot;
 
-import com.atlassian.jira.bc.ServiceOutcome;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
-import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.search.SearchException;
-import com.atlassian.jira.issue.search.SearchRequest;
-import com.atlassian.jira.issue.status.SimpleStatus;
-import com.atlassian.jira.issue.status.Status;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.user.ApplicationUser;
@@ -17,21 +12,23 @@ import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.model.mappers.SlackIntegrationMapper;
+import com.softwaredevtools.standbot.model.pojo.IssueList;
 import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
-import com.google.gson.Gson;
 import com.softwaredevtools.standbot.service.JWTService;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
 import com.softwaredevtools.standbot.service.StandbotAPI;
+import com.softwaredevtools.standbot.service.StandbotCustomAuthenticationService;
 import io.jsonwebtoken.Claims;
 import org.ofbiz.core.entity.GenericEntityException;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import java.lang.reflect.Type;
-import java.util.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.List;
 
 @Path("/")
 @Consumes({MediaType.APPLICATION_JSON})
@@ -45,9 +42,12 @@ public class StandbotController {
     private IssueManager _issueManager;
     private JWTService _jwtService;
     private SearchService _searchService;
+    private StandbotCustomAuthenticationService _authenticationService;
 
     public StandbotController(SlackIntegrationService slackIntegrationService, StandbotAPI standbotAPI, JWTService jwtService,
+                              StandbotCustomAuthenticationService authenticationService,
                               @ComponentImport SearchService searchService) {
+        _authenticationService = authenticationService;
         _searchService = searchService;
         _slackIntegrationService = slackIntegrationService;
         _standbotAPI = standbotAPI;
@@ -75,7 +75,18 @@ public class StandbotController {
     @Path("search")
     public Response search(@QueryParam("projectId") Long projectId, @QueryParam("userId") String userId,
                            @QueryParam("status") String status, @QueryParam("maxResults") String maxResults,
+                           @QueryParam("jwt") @DefaultValue("") String jwt,
                            @QueryParam("registeredJiraUrl") String registeredJiraUrl) throws GenericEntityException, SearchException {
+        if (jwt.isEmpty()) {
+            //bad request since jwt is required
+            return Response.status(400).build();
+        }
+
+        if(!_authenticationService.isValid(jwt)) {
+            //forbidden, since couldn't decode the jwt and it's supposed to be signed with the same SECRET
+            return Response.status(403).build();
+        }
+
         ApplicationUser user = ComponentAccessor.getUserManager().getUser(userId);
 
         String jqlStatus = "";
@@ -102,80 +113,6 @@ public class StandbotController {
         issueList.setIssues(issues, registeredJiraUrl);
 
         return Response.ok(GSON.toJson(issueList, IssueList.class)).build();
-    }
-
-    private class Priority {
-        private String name;
-
-        public Priority(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-    private class Fields {
-        private String summary;
-        private Priority priority;
-
-        public Fields(String summary, String priorityName) {
-            this.summary = summary;
-            this.priority = new Priority(priorityName);
-        }
-
-        public Priority getPriority() {
-            return priority;
-        }
-
-        public String getSummary() {
-            return summary;
-        }
-    }
-
-    private class CustomIssue {
-        private String key;
-        private Long id;
-        private String status;
-        private String self;
-        private Fields fields;
-
-        public CustomIssue(Issue issue, String registeredJiraUrl) {
-            key = issue.getKey();
-            id = issue.getId();
-            status = issue.getStatus().getSimpleStatus().getName();
-            self = registeredJiraUrl + "/rest/api/2/issue/" + id;
-            fields = new Fields(issue.getSummary(), issue.getPriority().getName());
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public String getKey() {
-            return key;
-        }
-    }
-
-    private class IssueList {
-        private List<CustomIssue> issues;
-
-        public List<CustomIssue> getIssues() {
-            return issues;
-        }
-
-        public void setIssues(List<Issue> issues, String registeredJiraUrl) {
-            this.issues = new ArrayList<CustomIssue>(issues.size());
-
-            for (Issue originalIssue : issues) {
-                this.issues.add(new CustomIssue(originalIssue, registeredJiraUrl));
-            }
-        }
     }
 
     @POST
