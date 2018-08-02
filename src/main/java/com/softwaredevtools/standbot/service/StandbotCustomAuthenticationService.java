@@ -1,6 +1,5 @@
 package com.softwaredevtools.standbot.service;
 
-import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
