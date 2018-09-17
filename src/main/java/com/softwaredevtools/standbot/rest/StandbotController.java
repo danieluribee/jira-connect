@@ -11,11 +11,15 @@ import com.atlassian.jira.web.bean.PagerFilter;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
+import com.atlassian.upm.api.license.PluginLicenseManager;
 import com.google.gson.Gson;
 import com.softwaredevtools.standbot.SlackVerifyResponse;
+import com.softwaredevtools.standbot.config.StandbotConfig;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.model.mappers.SlackIntegrationMapper;
 import com.softwaredevtools.standbot.model.pojo.IssueList;
+import com.softwaredevtools.standbot.model.pojo.NotifyPayload;
+import com.softwaredevtools.standbot.model.pojo.RelationsPayload;
 import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
 import com.softwaredevtools.standbot.service.StandbotAPI;
@@ -38,17 +42,22 @@ public class StandbotController {
     private Gson GSON;
 
     @ComponentImport
+    private final PluginLicenseManager _pluginLicenseManager;
+
+    @ComponentImport
     private SearchService _searchService;
     private StandbotCustomAuthenticationService _authenticationService;
 
     public StandbotController(SlackIntegrationService slackIntegrationService,
                               StandbotCustomAuthenticationService authenticationService,
-                              SearchService searchService, StandbotAPI standbotAPI) {
+                              SearchService searchService, StandbotAPI standbotAPI,
+                              PluginLicenseManager pluginLicenseManager) {
         _authenticationService = authenticationService;
         _searchService = searchService;
         _slackIntegrationService = slackIntegrationService;
         _standbotAPI = standbotAPI;
         _projectManager = ComponentAccessor.getProjectManager();
+        _pluginLicenseManager = pluginLicenseManager;
 
         GSON = new Gson();
     }
@@ -60,9 +69,33 @@ public class StandbotController {
     @GET
     @AnonymousAllowed
     @Path("healthcheck")
-    public Response healthcheck() {
+    public Response healthcheck(@QueryParam("clientKey") @DefaultValue("") String clientKey,
+                                @QueryParam("jwt") @DefaultValue("") String jwt) {
         SlackIntegration slackIntegration = _slackIntegrationService.getSlackIntegrationForHealthCheck();
-        return Response.ok(GSON.toJson(slackIntegration)).build();
+
+        /*
+        the standbot server should send the right clientKey
+         */
+        if (!slackIntegration.getClientKey().equals(clientKey)) {
+            return Response.status(403).build();
+        }
+
+        /*
+        validate that the standbot server is using the same JWT_SECRET
+         */
+        if (!_authenticationService.isValid(jwt)) {
+            return Response.status(403).build();
+        }
+
+        if (StandbotConfig.ENVIRONMENT.equals("LOCAL") || StandbotConfig.ENVIRONMENT.equals("STAGE")) {
+            return Response.ok().build();
+        } else {
+            if(_pluginLicenseManager.getLicense().isDefined() && !_pluginLicenseManager.getLicense().get().getError().isDefined()) {
+                return Response.ok().build();
+            } else {
+                return Response.status(403).build();
+            }
+        }
     }
 
     @GET
@@ -163,6 +196,40 @@ public class StandbotController {
         return Response.ok(response).build();
     }
 
+    @POST
+    @Path("jira/relations")
+    public Response saveStandupRelations(@QueryParam("hostBaseUrl") String hostBaseUrl,
+                                         RelationsPayload payload) {
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
+
+        if (slackIntegrationEntity == null) {
+            return Response.status(404).build();
+        }
+
+        SlackIntegration slackIntegration = SlackIntegrationMapper.map(slackIntegrationEntity);
+
+        String response = _standbotAPI.saveRelations(slackIntegration.getClientKey(), hostBaseUrl, payload);
+
+        return Response.ok(response).build();
+    }
+
+    @POST
+    @Path("/jira/notifyJiraInStandup")
+    public Response notifyJiraInStandup(@QueryParam("hosttBaseUrl") String hostBaseUrl,
+                                        NotifyPayload notifyPaylod) {
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
+
+        if (slackIntegrationEntity == null) {
+            return Response.status(404).build();
+        }
+
+        SlackIntegration slackIntegration = SlackIntegrationMapper.map(slackIntegrationEntity);
+
+        String response = _standbotAPI.notifyJiraInStandup(slackIntegration.getClientKey(), hostBaseUrl, notifyPaylod);
+
+        return Response.ok(response).build();
+    }
+
 
     @GET
     @Path("slack/relations")
@@ -199,6 +266,8 @@ public class StandbotController {
 
         if (result == null) {
             return Response.status(404).build();
+        } else if (result == "HTTP Response code: 409") {
+            return Response.status(409).build();
         } else {
             SlackVerifyResponse slackVerifyResponse = GSON.fromJson(result, SlackVerifyResponse.class);
 

@@ -12,29 +12,53 @@
         <img src="{{vm.resourcePrefix()}}/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-choose-project.png" alt="">
     </div>
 
-    <table class="aui" style="margin-top: 30px" >
+    <table class="aui" style="margin-top: 30px;">
         <thead>
-            <tr>
-                <th id="name">Channels with Stand-ups</th>
-                <th id="type">Jira Projects</th>
-            </tr>
+        <tr>
+            <th id="name">Channels with Stand-ups</th>
+            <th id="type">Jira Projects</th>
+        </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="standup in vm.standups">
-                <td>#{{ standup.name }}</td>
-                <td>
-                    <select ng-model="standup.jira_project_id" class="aui-button aui-style-default" ng-change="vm.checkSelectedProjects()">
-                        <option value="0">Not configured</option>
-                        <option ng-repeat="project in vm.projects" value="{{project.id}}" ng-disabled="standup.jira_project_id !== project.id && vm.isSelected(project.id)" >{{ project.name }}</option>
-                    </select>
-                </td>
-            </tr>
+        <tr ng-repeat="relation in vm.relations">
+            <td>
+                <select ng-model="relation.standup.platform_conversation_id"
+                        class="aui-button aui-style-default"
+                        ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
+                    <option value="0">Not configured</option>
+                    <option ng-repeat="standup in vm.uniqueStandups"
+                            value="{{standup.platform_conversation_id}}">
+                        {{ standup.name }}
+                    </option>
+                </select>
+            </td>
+            <td>
+                <select ng-model="relation.standup.jira_project_id"
+                        class="aui-button aui-style-default"
+                        ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
+                    <option value="0">Not configured</option>
+                    <option ng-repeat="project in vm.projects" ng-disabled="vm.usedInAnotherRelation(relation, project.id)" value="{{project.id}}">
+                        {{ project.name }}
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr style="border: none;">
+            <td colspan="2">
+                <button id="btn-verify-slack-team"
+                        class="aui-button aui-button-secondary"
+                        ng-click="vm.addNewConnection()">
+                    Add new connection
+                </button>
+            </td>
+        </tr>
         </tbody>
     </table>
+
     <p style="margin-top: 20px;">
         <button id="btn-verify-slack-team" class="aui-button aui-button-primary" ng-click="vm.saveStandupsConfiguration()">
             Save
         </button>
-        <span ng-show="vm.saved" style="display: inline-block; margin-left: 10px;">Saved <img src="{{vm.resourcePrefix()}}/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/icon-green-checkmark.png" style="margin-bottom: -3px" alt=""></span>
+        <span ng-show="vm.saved" style="display: inline-block; margin-left: 10px; margin-bottom: -3px">Saved <img src="{{vm.resourcePrefix()}}/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/icon-green-checkmark.png"></span>
     </p>
 </div>

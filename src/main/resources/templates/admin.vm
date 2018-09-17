@@ -1,6 +1,14 @@
 <html>
 <head>
+    <title>Standbot configuration</title>
     <meta name="client_key" content="$clientKey">
+    #if ($isLocal)
+        <link rel="shortcut icon"
+              href="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/favicon.ico">
+    #else
+        <link rel="shortcut icon"
+              href="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/favicon.ico">
+    #end
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui.css" media="all">
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui-experimental.css" media="all">
     <link src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css">
@@ -21,8 +29,32 @@
             window.standbotEnvironmentLocal = false;
         </script>
     #end
+
+    <style>
+        nav {
+            position: fixed;;
+            left: 0;
+            top: 0;
+        }
+    </style>
 </head>
 <body style="margin: 77px 200px; background-color: white;">
+<nav class="aui-header aui-dropdown2-trigger-group" role="navigation" resolved="" data-aui-responsive="true">
+    <div class="aui-header-inner">
+        <div class="aui-header-primary"><h1 id="logo" class="aui-header-logo aui-header-logo-custom"><a
+                href="/secure/MyJiraHome.jspa">
+            #if ($isLocal)
+                <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/icon-jira-logo.png"
+                     alt="Your Company JIRA" data-aui-responsive-header-index="0">
+            #else
+                <img src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/icon-jira-logo.png"
+                     alt="Your Company JIRA" data-aui-responsive-header-index="0">
+            #end
+        </a></h1>
+
+        </div>
+    </div>
+</nav>
 <div ng-app="JiraSettingsApp">
     <div ng-view=""></div>
 </div>

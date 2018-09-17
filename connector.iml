@@ -12,11 +12,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.util.concurrent:atlassian-util-concurrent:0.0.12" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.jersey:jersey-core:1.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.jersey:jersey-json:1.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.jettison:jettison:1.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.jackson:jackson-asl:0.9.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.jira:jira-api:7.2.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.annotations:atlassian-annotations:1.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.findbugs:jsr305:3.0.0" level="project" />
@@ -105,7 +100,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.profiling:atlassian-profiling:1.9" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.scheduler:atlassian-scheduler-api:1.7.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.analytics:analytics-api:5.2.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.0.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.application:atlassian-application-api:1.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.validation:validation-api:1.1.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
@@ -118,7 +112,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.wink:wink-common:1.1.3-incubating" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.geronimo.specs:geronimo-annotation_1.1_spec:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.1.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: com.atlassian.upm:upm-api:2.15" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.ws.rs:jsr311-api:1.1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.plugins.rest:atlassian-rest-common:1.0.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.jersey:jersey-server:1.0.3" level="project" />
@@ -155,5 +148,8 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.8.9" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.8.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.8.9" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.upm:licensing-api:2.21.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.atlassian.upm:upm-api:2.21" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.0.1" level="project" />
   </component>
 </module>

@@ -33,7 +33,7 @@ public class SlackIntegrationService {
 
         // if a record exists, then use its status
         if (slackIntegrationEntity != null) {
-            slackIntegration = new SlackIntegration(slackIntegrationEntity.getActive());
+            slackIntegration = new SlackIntegration(slackIntegrationEntity.getActive(), slackIntegrationEntity.getClientKey());
         }
         //otherwise, use false
         else {

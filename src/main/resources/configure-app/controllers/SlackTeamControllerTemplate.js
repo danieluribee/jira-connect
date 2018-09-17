@@ -10,6 +10,7 @@
 
         vm.slackSubdomain = '';
         vm.showInstallInstructions = false;
+        vm.showAnotherRelation = false;
         vm.loading = true;
         vm.slackTeamId = null;
         vm.standups = [];
@@ -17,6 +18,7 @@
 
         vm.verifySlackTeam = verifySlackTeam;
         vm.saveStandupsConfiguration = saveStandupsConfiguration;
+        vm.reload = reload;
         vm.resourcePrefix = function() {
             return window.standbotEnvironmentLocal ? '/jira' : '';
         };
@@ -58,6 +60,9 @@
                     }
                 })
                 .catch(function (res) {
+                    if (res.status == 409) {
+                        vm.showAnotherRelation = true;
+                    }
                     if (res.status === 404) {
                         vm.slackUrl = 'https://slack.com/oauth/authorize?client_id=@@SLACK_CLIENT_ID&scope=bot,users:read,users.profile:read,chat:write:bot,groups:read,channels:read,team:read,chat:write:bot&state=' + $window.btoa(window.location.href + '||' + vm.slackSubdomain);
                         vm.showInstallInstructions = true;
@@ -93,6 +98,10 @@
             }
 
             return res;
+        }
+
+        function reload() {
+            window.location.reload();
         }
     }
 }(window.angular));

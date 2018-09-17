@@ -2,7 +2,7 @@
     Loading, please wait...
 </div>
 <div ng-hide="vm.loading" style="margin-bottom: 40px;">
-    <div ng-hide="vm.showInstallInstructions">
+    <div ng-hide="vm.showInstallInstructions || vm.showAnotherRelation">
         <div style="overflow: hidden">
             <img src="{{vm.resourcePrefix()}}/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-verify-team.png" alt="">
         </div>
@@ -18,12 +18,21 @@
         </div>
     </div>
     
-    <div ng-show="!vm.loading && vm.showInstallInstructions">
+    <div ng-show="!vm.loading && vm.showInstallInstructions && !vm.showAnotherRelation">
         <div style="overflow: hidden">
             <img src="{{vm.resourcePrefix()}}/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-not-installed.png" alt="">
         </div>
         <div style="clear: both; margin-top: 20px; padding-left: 114px;" >
             <a target="_parent" ng-href="{{vm.slackUrl}}" ><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
         </div>
+    </div>
+
+    <div ng-show="!vm.loading && !vm.showInstallInstructions && vm.showAnotherRelation">
+        <div style="overflow: hidden">
+            <img src="{{vm.resourcePrefix()}}/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-connected-other-jira.png" width="494" height="100">
+        </div>
+        <button id="btn-verify-slack-team" class="aui-button aui-button-primary" style="margin-left: 112px; margin-top: 20px;" ng-click="vm.reload()">
+            Try again
+        </button>
     </div>
 </div>

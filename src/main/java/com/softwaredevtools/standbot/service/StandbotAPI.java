@@ -2,6 +2,9 @@ package com.softwaredevtools.standbot.service;
 
 import com.google.gson.Gson;
 import com.softwaredevtools.standbot.config.StandbotConfig;
+import com.softwaredevtools.standbot.model.pojo.NotifyPayload;
+import com.softwaredevtools.standbot.model.pojo.Relation;
+import com.softwaredevtools.standbot.model.pojo.RelationsPayload;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -50,6 +53,9 @@ public class StandbotAPI {
             }
             return stringBuilder.toString();
         } catch (Exception e) {
+            if (e.getMessage().contains("HTTP response code: 409")) {
+                return "HTTP Response code: 409";
+            }
             return null;
         }
     }
@@ -117,6 +123,36 @@ public class StandbotAPI {
                 StandbotConfig.STANDBOT_API_BASE_URL + "jira/projects/" + projectId + "/standups?jwt=" + jwt,
                 "POST",
                 "{\"slack_channel_id\":\"" + slackChannelId + "\", \"slack_team_id\":\"" + slackTeamId + "\"}"
+        );
+    }
+
+    public String saveRelations(String clientKey, String hostBaseUrl, RelationsPayload payload) {
+        String jwt = getJwt(clientKey, hostBaseUrl, "");
+
+        String relationsString = "";
+
+        for (int i = 0; i < payload.getRelations().length; i++) {
+            Relation relation = payload.getRelations()[i];
+            relationsString += "{\"standup\": {\"jira_project_id\": \"" + relation.getStandup().getJira_project_id() + "\", \"platform_conversation_id\": \"" + relation.getStandup().getPlatform_conversation_id() + "\"}}";
+            if (i < payload.getRelations().length - 1) {
+                relationsString += ",";
+            }
+        }
+
+        return makeHttpCall(
+                StandbotConfig.STANDBOT_API_BASE_URL + "jira/relations?jwt=" + jwt,
+                "POST",
+                "{\"slack_team_id\":\"" + payload.getSlack_team_id()+ "\", \"relations\":[" + relationsString + "]}"
+        );
+    }
+
+    public String notifyJiraInStandup(String clientKey, String hostBaseUrl, NotifyPayload notifyPaylod) {
+        String jwt = getJwt(clientKey, hostBaseUrl, "");
+
+        return makeHttpCall(
+                StandbotConfig.STANDBOT_API_BASE_URL + "jira/notifyJiraInStandup?jwt=" + jwt,
+                "POST",
+                "{\"slack_team_id\":\"" + notifyPaylod.getSlack_team_id()+ "\"}"
         );
     }
 }
