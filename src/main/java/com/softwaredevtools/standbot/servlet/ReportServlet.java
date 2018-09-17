@@ -55,7 +55,7 @@ public class ReportServlet extends HttpServlet {
             response.sendError(404, "Project not found");
         } else {
             String baseUrl = ComponentAccessor.getApplicationProperties().getString("jira.baseurl");
-            response.sendRedirect(baseUrl + "/projects/" +  project.getKey() + "?selectedItem=stand-bot-slack-stand-up-bot-for-jira:standbotreport-project-render");
+            response.sendRedirect(baseUrl + "/projects/" +  project.getKey() + "?selectedItem=slack-standup-bot-jira:standbotreport-project-render");
         }
     }
 

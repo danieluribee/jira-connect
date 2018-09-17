@@ -4,26 +4,26 @@
     <meta name="client_key" content="$clientKey">
     #if ($isLocal)
         <link rel="shortcut icon"
-              href="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/favicon.ico">
+              href="/jira/download/resources/slack-standup-bot-jira:connector-resources/images/favicon.ico">
     #else
         <link rel="shortcut icon"
-              href="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/favicon.ico">
+              href="/download/resources/slack-standup-bot-jira:connector-resources/images/favicon.ico">
     #end
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui.css" media="all">
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui-experimental.css" media="all">
-    <link src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css">
+    <link src="/jira/download/resources/slack-standup-bot-jira:connector-resources/connector.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js"
             type="text/javascript"></script>
 
     #if ($isLocal)
-        <script src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/main.js"
+        <script src="/jira/download/resources/slack-standup-bot-jira:connector-resources/main.js"
                 type="text/javascript"></script>
         <script>
             window.standbotEnvironmentLocal = true;
         </script>
     #else
-        <script src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/main.js"
+        <script src="/download/resources/slack-standup-bot-jira:connector-resources/main.js"
                 type="text/javascript"></script>
         <script>
             window.standbotEnvironmentLocal = false;
@@ -44,10 +44,10 @@
         <div class="aui-header-primary"><h1 id="logo" class="aui-header-logo aui-header-logo-custom"><a
                 href="/secure/MyJiraHome.jspa">
             #if ($isLocal)
-                <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/icon-jira-logo.png"
+                <img src="/jira/download/resources/slack-standup-bot-jira:connector-resources/images/icon-jira-logo.png"
                      alt="Your Company JIRA" data-aui-responsive-header-index="0">
             #else
-                <img src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/icon-jira-logo.png"
+                <img src="/download/resources/slack-standup-bot-jira:connector-resources/images/icon-jira-logo.png"
                      alt="Your Company JIRA" data-aui-responsive-header-index="0">
             #end
         </a></h1>

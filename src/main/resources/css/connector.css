@@ -4,7 +4,7 @@ html, body {
 
 .standbot-sidebar-icon {
     background-size: contain;
-    background-image: url("/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources-general/images/icon-standup.png"), url("/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources-general/images/icon-standup.png");
+    background-image: url("/jira/download/resources/slack-standup-bot-jira:connector-resources-general/images/icon-standup.png"), url("/download/resources/slack-standup-bot-jira:connector-resources-general/images/icon-standup.png");
 }
 
 /* add-on styles */

@@ -64,12 +64,12 @@
 
     <web-item key="standbotreport-project" section="jira.project.sidebar.plugins.navigation" weight="300">
         <label key="standbot.report.project.title"/>
-        <link>/projects/$pathEncodedProjectKey?selectedItem=stand-bot-slack-stand-up-bot-for-jira:standbotreport-project-render</link>
+        <link>/projects/$pathEncodedProjectKey?selectedItem=slack-standup-bot-jira:standbotreport-project-render</link>
         <param name="iconClass" value="aui-icon-large standbot-sidebar-icon"/>
     </web-item>
 
     <web-panel key="standbotreport-project-render" class="com.softwaredevtools.standbot.webpabel.Report"
-                location="stand-bot-slack-stand-up-bot-for-jira:standbotreport-project-render">
+                location="slack-standup-bot-jira:standbotreport-project-render">
     </web-panel>
 
 </atlassian-plugin>

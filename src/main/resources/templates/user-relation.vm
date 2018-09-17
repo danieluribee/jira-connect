@@ -1,19 +1,19 @@
 <html>
 <head>
     #if ($isLocal)
-        <link rel="shortcut icon" href="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/favicon.ico">
+        <link rel="shortcut icon" href="/jira/download/resources/slack-standup-bot-jira:connector-resources/images/favicon.ico">
     #else
-        <link rel="shortcut icon" href="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/favicon.ico">
+        <link rel="shortcut icon" href="/download/resources/slack-standup-bot-jira:connector-resources/images/favicon.ico">
     #end
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui.css" media="all">
     <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.12/css/aui-experimental.css" media="all">
-    <link src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css">
+    <link src="/jira/download/resources/slack-standup-bot-jira:connector-resources/connector.css">
     #if ($isLocal)
         <link rel="stylesheet"
-              href="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css"></link>
+              href="/jira/download/resources/slack-standup-bot-jira:connector-resources/connector.css"></link>
     #else
         <link rel="stylesheet"
-              href="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/connector.css"></link>
+              href="/download/resources/slack-standup-bot-jira:connector-resources/connector.css"></link>
     #end
     <style>
         nav {
@@ -28,7 +28,7 @@
     <div class="aui-header-inner">
         <div class="aui-header-primary"><h1 id="logo" class="aui-header-logo aui-header-logo-custom"><a
                 href="/secure/MyJiraHome.jspa"><img
-                src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/icon-jira-logo.png"
+                src="/download/resources/slack-standup-bot-jira:connector-resources/images/icon-jira-logo.png"
                 alt="Your Company JIRA" data-aui-responsive-header-index="0"></a></h1>
 
         </div>
@@ -43,9 +43,9 @@
                     <div ng-hide="vm.loading" style="margin-bottom: 40px;">
                         <div style="overflow: hidden">
                             #if ($isLocal)
-                                <img src="/jira/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-confirm-link.png">
+                                <img src="/jira/download/resources/slack-standup-bot-jira:connector-resources/images/graphic-bot-confirm-link.png">
                             #else
-                                <img src="/download/resources/stand-bot-slack-stand-up-bot-for-jira:connector-resources/images/graphic-bot-confirm-link.png">
+                                <img src="/download/resources/slack-standup-bot-jira:connector-resources/images/graphic-bot-confirm-link.png">
                             #end
                         </div>
                         <div style="clear: both; margin-top: 20px; padding-left: 114px;">
