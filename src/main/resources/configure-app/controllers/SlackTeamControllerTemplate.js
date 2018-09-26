@@ -64,7 +64,7 @@
                         vm.showAnotherRelation = true;
                     }
                     if (res.status === 404) {
-                        vm.slackUrl = 'https://slack.com/oauth/authorize?client_id=@@SLACK_CLIENT_ID&scope=bot,users:read,users.profile:read,chat:write:bot,groups:read,channels:read,team:read,chat:write:bot&state=' + $window.btoa(window.location.href + '||' + vm.slackSubdomain);
+                        vm.slackUrl = 'https://slack.com/oauth/authorize?client_id=@@SLACK_CLIENT_ID&scope=bot,users:read,users:read.email,groups:read,channels:read,team:read&state=' + $window.btoa(window.location.href + '||' + vm.slackSubdomain);
                         vm.showInstallInstructions = true;
                     }
                 });
