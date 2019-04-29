@@ -3,7 +3,7 @@ package com.softwaredevtools.standbot.rest;
 import com.atlassian.jira.bc.issue.search.SearchService;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.search.SearchException;
+import com.atlassian.jira.issue.search.SearchResults;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.jira.user.ApplicationUser;
@@ -17,18 +17,17 @@ import com.softwaredevtools.standbot.SlackVerifyResponse;
 import com.softwaredevtools.standbot.config.StandbotConfig;
 import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.model.mappers.SlackIntegrationMapper;
-import com.softwaredevtools.standbot.model.pojo.IssueList;
-import com.softwaredevtools.standbot.model.pojo.NotifyPayload;
-import com.softwaredevtools.standbot.model.pojo.RelationsPayload;
-import com.softwaredevtools.standbot.model.pojo.SlackIntegration;
+import com.softwaredevtools.standbot.model.pojo.*;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
 import com.softwaredevtools.standbot.service.StandbotAPI;
 import com.softwaredevtools.standbot.service.StandbotCustomAuthenticationService;
-import org.ofbiz.core.entity.GenericEntityException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.LinkedList;
 import java.util.List;
 
 @Path("/")
@@ -104,7 +103,7 @@ public class StandbotController {
     public Response search(@QueryParam("projectId") Long projectId, @QueryParam("userId") String userId,
                            @QueryParam("status") String status, @QueryParam("maxResults") String maxResults,
                            @QueryParam("jwt") @DefaultValue("") String jwt,
-                           @QueryParam("registeredJiraUrl") String registeredJiraUrl) throws GenericEntityException, SearchException {
+                           @QueryParam("registeredJiraUrl") String registeredJiraUrl) throws Exception {
         if (jwt.isEmpty()) {
             //bad request since jwt is required
             return Response.status(400).build();
@@ -142,12 +141,43 @@ public class StandbotController {
             throw new IllegalArgumentException("Invalid JQL query specified for chart '" + jql + "'.");
         }
 
-        List<Issue> issues = _searchService.search(user, parseResult.getQuery(), new PagerFilter(5)).getIssues();
+        SearchResults searchResults = _searchService.search(user, parseResult.getQuery(), new PagerFilter(5));
 
-        IssueList issueList = new IssueList();
-        issueList.setIssues(issues, registeredJiraUrl);
+        Method method = null;
+        try {
+            method = searchResults.getClass().getMethod("getIssues");
+            System.out.println("Will try to use getIssues to list issues");
+        } catch (NoSuchMethodException e) {
+            System.out.println("getIssues method doesn't exist");
+        }
 
-        return Response.ok(GSON.toJson(issueList, IssueList.class)).build();
+        if (method == null) {
+            try {
+                method = searchResults.getClass().getMethod("getResults");
+                System.out.println("Will try to use getResults to list issues");
+            } catch (NoSuchMethodException e) {
+                System.out.println("getResults method doesn't exist");
+            }
+        }
+
+        if (method == null) {
+            return Response.status(500).entity("Can't locate proper method to get issues").build();
+        }
+
+        try {
+            System.out.println("Try to list issues using " + method.getName());
+            List<Issue> issues = (List<Issue>) method.invoke(searchResults);
+            IssueList issueList = new IssueList();
+            issueList.setIssues(issues, registeredJiraUrl);
+
+            return Response.ok(GSON.toJson(issueList, IssueList.class)).build();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return Response.status(500).entity("Error in issues result invocation").build();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            return Response.status(500).entity("Error in issues result invocation").build();
+        }
     }
 
     @POST
@@ -177,8 +207,15 @@ public class StandbotController {
     @Path("jira/projects")
     public Response getProjects(@QueryParam("hostBaseUrl") String hostBaseUrl) {
         List<Project> projects = _projectManager.getProjectObjects();
-        return Response.ok(GSON.toJson(projects)).build();
+        List<ProjectDTO> projectDTOs = new LinkedList<ProjectDTO>();
+
+        for (Project project : projects) {
+            projectDTOs.add(new ProjectDTO(project.getId(), project.getName()));
+        }
+
+        return Response.ok(GSON.toJson(projectDTOs)).build();
     }
+
 
     @POST
     @Path("jira/projects/{projectId}/standups")

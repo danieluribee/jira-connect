@@ -77,7 +77,7 @@
                     vm.projects = projectsResult.data.map(function (project) {
                         return {
                             id: project.id,
-                            name: project.projectGV.name
+                            name: project.name
                         }
                     });
                     $log.log(vm.projects);
