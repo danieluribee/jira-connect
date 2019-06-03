@@ -102,7 +102,7 @@ public class StandbotController {
     @Path("search")
     public Response search(@QueryParam("projectId") Long projectId, @QueryParam("userId") String userId,
                            @QueryParam("status") String status, @QueryParam("maxResults") String maxResults,
-                           @QueryParam("jwt") @DefaultValue("") String jwt,
+                           @QueryParam("standbot-jwt") @DefaultValue("") String jwt,
                            @QueryParam("registeredJiraUrl") String registeredJiraUrl) throws Exception {
         if (jwt.isEmpty()) {
             //bad request since jwt is required
