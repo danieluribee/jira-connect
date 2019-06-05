@@ -48,6 +48,7 @@ public class ReportServlet extends HttpServlet {
         response.setContentType("text/html;charset=utf-8");
 
         String projectId = request.getParameter("project.id");
+        String slackChannelId = request.getParameter("ac.slackChannelId");
 
         Project project = _projectManager.getProjectObj(Long.parseLong(projectId));
 
@@ -55,7 +56,7 @@ public class ReportServlet extends HttpServlet {
             response.sendError(404, "Project not found");
         } else {
             String baseUrl = ComponentAccessor.getApplicationProperties().getString("jira.baseurl");
-            response.sendRedirect(baseUrl + "/projects/" +  project.getKey() + "?selectedItem=slack-standup-bot-jira:standbotreport-project-render");
+            response.sendRedirect(baseUrl + "/projects/" +  project.getKey() + "?selectedItem=slack-standup-bot-jira:standbotreport-project-render&slackChannelId=" + slackChannelId);
         }
     }
 

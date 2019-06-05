@@ -121,7 +121,7 @@ public class StandbotController {
             return Response.status(403).build();
         }
 
-        ApplicationUser user = ComponentAccessor.getUserManager().getUser(userId);
+        ApplicationUser user = ComponentAccessor.getUserManager().getUserByKey(userId);
 
         String jqlStatus = "";
 
