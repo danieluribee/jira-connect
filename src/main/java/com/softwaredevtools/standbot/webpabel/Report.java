@@ -11,6 +11,7 @@ import com.softwaredevtools.standbot.model.SlackIntegrationEntity;
 import com.softwaredevtools.standbot.service.JWTService;
 import com.softwaredevtools.standbot.service.SlackIntegrationService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -40,6 +41,13 @@ public class Report implements WebPanel {
         System.out.println("Using client key: " + slackIntegrationEntity.getClientKey());
 
         String projectKey = (String) map.getOrDefault("projectKey", null);
+        String slackChannelId = "";
+
+        try {
+            slackChannelId = ((HttpServletRequest)map.get("request")).getParameter("slackChannelId");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (projectKey == null) {
             return null;
@@ -58,6 +66,7 @@ public class Report implements WebPanel {
         data.put("hostBaseUrl", url);
         String jwt = _jwtService.sign(data);
 
+        map.put("slackChannelId", slackChannelId);
         map.put("projectId", project.getId());
         map.put("clientKey", slackIntegrationEntity.getClientKey());
         map.put("jwt", jwt);
