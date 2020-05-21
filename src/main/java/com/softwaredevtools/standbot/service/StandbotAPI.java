@@ -133,7 +133,7 @@ public class StandbotAPI {
 
         for (int i = 0; i < payload.getRelations().length; i++) {
             Relation relation = payload.getRelations()[i];
-            relationsString += "{\"standup\": {\"jira_project_id\": \"" + relation.getStandup().getJira_project_id() + "\", \"platform_conversation_id\": \"" + relation.getStandup().getPlatform_conversation_id() + "\"}}";
+            relationsString += "{\"jiraProjectId\": \"" + relation.getStandup().getJira_project_id() + "\", \"standupConfigurationConversationId\": \"" + relation.getStandup().getPlatform_conversation_id() + "\"}";
             if (i < payload.getRelations().length - 1) {
                 relationsString += ",";
             }

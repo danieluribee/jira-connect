@@ -89,11 +89,6 @@
 
                     vm.relations = angular.copy(vm.standups, [])
                         .filter(function (standup) {
-                            if (keys[standup._id]) {
-                                return false;
-                            }
-
-                            keys[standup._id] = true;
                             return standup.jira_project_id;
                         })
                         .map(function (standup) {
