@@ -17,7 +17,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/nearsoftlabs/jira-server-connector#readme",
   "dependencies": {
-    "angular": "^1.7.0",
+    "angular": "^1.8.0",
     "angular-route": "^1.7.0",
     "grunt": "^1.1.0",
     "grunt-angular-templates": "^1.1.0",
