@@ -16,8 +16,21 @@
         vm.uniqueStandups = [];
         vm.projects = [];
         vm.relations = [];
+        vm.settings = [];
         vm.loading = true;
         vm.saved = false;
+        vm.selectedTab = 'JIRA_CONNECTIONS';
+        vm.currentStandupSettings = [];
+        vm.currentStandupSettings.displayNoUpdates = null;
+        vm.currentStandupSettings.postProd = null;
+        vm.currentStandupSettings.reportASAP = null;
+        vm.currentStandupSettings.sameTime = null;
+        vm.currentStandupSettings.PersonalizedTime = null;
+        vm.currentStandupSettings.newStatus = null;
+        vm.currentStandupSettings.displayNewStatus = null;
+        vm.currentStandupSettings.editStatus = null;
+        vm.currentStandupSettings.displayEditStatus = null;
+        vm.currentStandupSettings.deleteStatus = null;
 
         vm.resourcePrefix = function () {
             return window.standbotEnvironmentLocal ? '/jira' : '';
@@ -28,6 +41,8 @@
         vm.removeUselessRelation = removeUselessRelation;
         vm.removeDuplicatedRelations = removeDuplicatedRelations;
         vm.usedInAnotherRelation = usedInAnotherRelation;
+        vm.obtainStandupConfig = obtainStandupConfig;
+        vm.sentStandupConfig = sentStandupConfig;
 
         _init();
 
@@ -218,6 +233,49 @@
             } else {
                 return count >= 1;
             }
+        }
+
+        function obtainStandupConfig() {
+            $http.get(SERVER_BASE_URL + '/slack/obtainStandupConfig').then(function (standupConfig) {
+                $log.log(standupConfig);
+                if (standupConfig) {
+                    vm.currentStandupSettings.displayNoUpdates = standupConfig.no_updates_button;
+                    vm.currentStandupSettings.postProd = standupConfig.post_in_prod;
+                    vm.currentStandupSettings.reportASAP = standupConfig.post_asap_everyone;
+                    vm.currentStandupSettings.sameTime = standupConfig.same_time_zone;
+                    vm.currentStandupSettings.PersonalizedTime = standupConfig.porsonalized_time_zone;
+                    vm.currentStandupSettings.newStatus = standupConfig.new_status;
+                    vm.currentStandupSettings.displayNewStatus = standupConfig.display_new_status;
+                    vm.currentStandupSettings.editStatus = standupConfig.edit_status;
+                    vm.currentStandupSettings.displayEditStatus = standupConfig.display_edit_status;
+                    vm.currentStandupSettings.deleteStatus = standupConfig.delete_status;
+                } else {
+                    $location.path('/');
+                }
+            });
+        }
+
+        function sentStandupConfig() {
+            console.log('yesss');
+
+            const questions = ["What did you accomplish since your last stand up?",
+            "What are you working on today?"];
+
+            const newSettings = {
+                "standup_questions": questions,
+                "no_updates_button": vm.currentStandupSettings.displayNoUpdates,
+                "post_in_prod": vm.currentStandupSettings.postProd,
+                "post_asap_everyone": vm.currentStandupSettings.reportASAP,
+                "same_time_zone": vm.currentStandupSettings.sameTime,
+                "porsonalized_time_zone": vm.currentStandupSettings.PersonalizedTime,
+                "new_status": vm.currentStandupSettings.newStatus,
+                "display_new_status": vm.currentStandupSettings.displayNewStatus,
+                "edit_status": vm.currentStandupSettings.editStatus,
+                "display_edit_status": vm.currentStandupSettings.displayEditStatus,
+                "delete_status": vm.currentStandupSettings.deleteStatus
+            };
+
+            return $http.post('http://localhost:8082/addSettings',newSettings);
         }
     }
 })(window.angular);

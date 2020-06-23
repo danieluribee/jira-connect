@@ -1,64 +1,392 @@
 <div ng-show="vm.loading">
     Loading, please wait...
 </div>
-<div ng-show="!vm.loading && !vm.standups.length" style="margin-bottom: 40px;" >
+<div ng-show="!vm.loading && !vm.standups.length" style="margin-bottom: 40px; padding: 2px;">
     <div style="overflow: hidden">
-        <img src="{{vm.resourcePrefix()}}/download/resources/slack-standup-bot-jira:connector-resources/images/graphic-bot-setup-instructions.png" alt="">
+        <img src="{{vm.resourcePrefix()}}/download/resources/slack-standup-bot-jira:connector-resources/images/graphic-bot-setup-instructions.png"
+            alt="">
     </div>
 </div>
 
-<div ng-show="!vm.loading && vm.standups.length" style="margin-bottom: 40px;" >
+<div ng-show="!vm.loading && vm.standups.length" style="margin-bottom: 40px;">
     <div style="overflow: hidden">
-        <img src="{{vm.resourcePrefix()}}/download/resources/slack-standup-bot-jira:connector-resources/images/graphic-bot-choose-project.png" alt="">
+        <img ng-if="vm.selectedTab == 'JIRA_CONNECTIONS'"
+            src="{{vm.resourcePrefix()}}/download/resources/slack-standup-bot-jira:connector-resources/images/graphic-bot-choose-project.png"
+            alt="">
+        <div ng-if="vm.selectedTab == 'STANDUP_SETTINGS' || vm.selectedTab == 'STANDUP_SETTINGS_EDIT'">
+            <img src="https://i.ibb.co/rdNW18w/graphic-bot-meet-seetings.png" alt="">
+        </div>
+    </div>
+    </br>
+    </br>
+
+    <article class="aui-flatpack-example">
+        <div class="aui-tabs horizontal-tabs" id="tabs-jira" role="application">
+            <ul class="tabs-menu" role="tablist">
+                <li class="menu-item" role="presentation">
+                    <a role="tab" ng-click="vm.selectedTab = 'JIRA_CONNECTIONS'"
+                        ngStyle="{'background-color': vm.selectedTab == 'JIRA_CONNECTIONS' ? 'white' : '#e9e9e9'}">
+                        Jira Connections
+                    </a>
+                </li>
+                <li class="menu-item" role="presentation">
+                    <a role="tab" ng-click="vm.selectedTab = 'STANDUP_SETTINGS'"
+                        ngStyle="{'background-color': vm.selectedTab == 'STANDUP_SETTINGS' ? 'white' : '#e9e9e9'}">
+                        Stand-up settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </article>
+
+    <div class="tabs-pane active-pane" ng-if="vm.selectedTab == 'JIRA_CONNECTIONS'" role="tabpanel"
+        aria-labelledby="aui-uid-0">
+
+        <table class="aui" style="margin-top: 30px;">
+            <thead>
+                <tr>
+                    <th >Channels with Stand-ups</th>
+                    <th >Jira Projects</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="relation in vm.relations">
+                    <td>
+                        <select ng-model="relation.standup.platform_conversation_id"
+                            class="aui-button aui-style-default"
+                            ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
+                            <option value="0">Not configured</option>
+                            <option ng-repeat="standup in vm.uniqueStandups"
+                                value="{{standup.platform_conversation_id}}">
+                                {{ standup.name }}
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        <select ng-model="relation.standup.jira_project_id" class="aui-button aui-style-default"
+                            ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
+                            <option value="0">Not configured</option>
+                            <option ng-repeat="project in vm.projects"
+                                ng-disabled="vm.usedInAnotherRelation(relation, project.id)" value="{{project.id}}">
+                                {{ project.name }}
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td colspan="2">
+                        <button id="btn-verify-slack-team" class="aui-button aui-button-secondary"
+                            ng-click="vm.addNewConnection()">
+                            Add new connection
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="margin-top: 20px;">
+            <button id="btn-verify-slack-team" class="aui-button aui-button-primary"
+                ng-click="vm.saveStandupsConfiguration()">
+                Save
+            </button>
+            <span ng-show="vm.saved" style="display: inline-block; margin-left: 10px; margin-bottom: -3px">Saved <img
+                    src="{{vm.resourcePrefix()}}/download/resources/slack-standup-bot-jira:connector-resources/images/icon-green-checkmark.png"></span>
+        </p>
     </div>
 
-    <table class="aui" style="margin-top: 30px;">
-        <thead>
-        <tr>
-            <th id="name">Channels with Stand-ups</th>
-            <th id="type">Jira Projects</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="relation in vm.relations">
-            <td>
-                <select ng-model="relation.standup.platform_conversation_id"
-                        class="aui-button aui-style-default"
-                        ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
-                    <option value="0">Not configured</option>
-                    <option ng-repeat="standup in vm.uniqueStandups"
-                            value="{{standup.platform_conversation_id}}">
-                        {{ standup.name }}
-                    </option>
-                </select>
-            </td>
-            <td>
-                <select ng-model="relation.standup.jira_project_id"
-                        class="aui-button aui-style-default"
-                        ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
-                    <option value="0">Not configured</option>
-                    <option ng-repeat="project in vm.projects" ng-disabled="vm.usedInAnotherRelation(relation, project.id)" value="{{project.id}}">
-                        {{ project.name }}
-                    </option>
-                </select>
-            </td>
-        </tr>
-        <tr style="border: none;">
-            <td colspan="2">
-                <button id="btn-verify-slack-team"
-                        class="aui-button aui-button-secondary"
-                        ng-click="vm.addNewConnection()">
-                    Add new connection
-                </button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="tabs-pane active-pane" ng-if="vm.selectedTab == 'STANDUP_SETTINGS'" role="tabpanel"
+        aria-labelledby="aui-uid-0">
 
-    <p style="margin-top: 20px;">
-        <button id="btn-verify-slack-team" class="aui-button aui-button-primary" ng-click="vm.saveStandupsConfiguration()">
-            Save
-        </button>
-        <span ng-show="vm.saved" style="display: inline-block; margin-left: 10px; margin-bottom: -3px">Saved <img src="{{vm.resourcePrefix()}}/download/resources/slack-standup-bot-jira:connector-resources/images/icon-green-checkmark.png"></span>
-    </p>
+        <table class="aui" style="margin-top: 30px;">
+            <thead>
+                <tr>
+                    <th ></th>
+                    <th ></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td style="vertical-align:middle">
+                        <span>#Sprint-Planning</span>
+                    </td>
+                    <!--#{{standup.name}}-->
+                    <td>
+                        <button class="aui-button" style="float:right"
+                            ng-click="vm.selectedTab = 'STANDUP_SETTINGS_EDIT'">Edit</button>
+                        <!--ng-click="standup.showSettings = !standup.showSettings"-->
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="vertical-align:middle">
+                        <span>#Daily-Scrum</span>
+                    </td>
+                    <!--#{{standup.name}}-->
+                    <td>
+                        <button class="aui-button" style="float:right"
+                            ng-click="vm.selectedTab = 'STANDUP_SETTINGS_EDIT'">Edit</button>
+                        <!--ng-click="standup.showSettings = !standup.showSettings"-->
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="vertical-align:middle">
+                        <span>#Sprint-Retrospective</span>
+                    </td>
+                    <!--#{{standup.name}}-->
+                    <td>
+                        <button class="aui-button" style="float:right"
+                            ng-click="vm.selectedTab = 'STANDUP_SETTINGS_EDIT'">Edit</button>
+                        <!--ng-click="standup.showSettings = !standup.showSettings"-->
+                    </td>
+                </tr>
+
+                <!-- <tr ng-repeat="relation in vm.relations">
+                    <td>
+                        <select ng-model="relation.standup.platform_conversation_id" class="aui-button aui-style-default"
+                            ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
+                            <option value="0">Not configured</option>
+                            <option ng-repeat="standup in vm.uniqueStandups" value="{{standup.platform_conversation_id}}">
+                                {{ standup.name }}
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        <select ng-model="relation.standup.jira_project_id" class="aui-button aui-style-default"
+                            ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
+                            <option value="0">Not configured</option>
+                            <option ng-repeat="project in vm.projects"
+                                ng-disabled="vm.usedInAnotherRelation(relation, project.id)" value="{{project.id}}">
+                                {{ project.name }}
+                            </option>
+                        </select>
+                    </td>
+                </tr> -->
+            </tbody>
+        </table>
+    </div>
+
+    <div ng-if="vm.selectedTab == 'STANDUP_SETTINGS_EDIT'">
+        <div class="container">
+            <div ng-show="vm.loading">
+                Loading, please wait...
+            </div>
+            <div style="margin-bottom: 40px;">
+                <!--ng-show="!vm.loading && vm.standups.length"-->
+                <br>
+                <form class="aui top-label">
+                    <fieldset class="top-label">
+                        <div class="field-group top-label">
+                            <label style="display:inline;">#Sprint-Planning</label>
+                            <button class="aui-button" style="float:right; display:inline">Edit</button>
+                            <span style="display:block; text-indent: 2em"><b>Setup</b></span>
+                        </div>
+                    </fieldset>
+                </form>
+                <div class="field-group">
+                    <span style="display:block; text-indent: 3em"><label style="color:gray">
+                            Time of Standup:</label>
+                        16:10/America Chihuahua
+                    </span>
+                    <span style="display:block; text-indent: 3em"><label style="color:gray">
+                            Scrum Master:</label>
+                        Moica Tie
+                    </span>
+                    <span style="display:block; text-indent: 3em"><label style="color:gray">
+                            Periodicity:</label>
+                        Monday, Tuesday
+                    </span>
+                    <br>
+                    <span style="display:block; text-indent: 3em">
+                        <span class="aui-icon aui-icon-small aui-iconfont-info" style="color:gray"></span>
+                        <span>
+                            To modify these settings go to Slack #channel and type "@standbot setup"
+                        </span>
+                    </span>
+                </div>
+                <div class="field-group">
+                    <br>
+                    <br>
+                    <span style="display:block; text-indent: 2em">
+                        <b>Stand-up questions</b>
+                    </span>
+                    <table class="aui" style="margin-top: 30px; font-size: small">
+                        <thead>
+                            <tr>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="vertical-align:middle; text-indent: 3em">
+                                    <span>What did you accomplish since your last stand up?</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:middle; text-indent: 3em">
+                                    <span>What are you working on today?</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align:middle; text-indent: 3em">
+                                    <span style="color:gray">+ Add new question</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="field-group">
+                    <br>
+                    <br>
+                    <span style="display:block; text-indent: 2em">
+                        <b>Stand-up reminders</b>
+                    </span>
+                    <div style="vertical-align:middle; text-indent: 3em">
+                        <aui-label for="updates-toogle">Display "No Updates" button</aui-label>
+                        <input type="checkbox" class="aui-toggle-input" id="updates-checkbox"
+                            aria-label="Display 'No Updates' button" tooltip-on="On" tooltip-off="Off" original-title=""
+                            checked="" ng-model="vm.currentStandupSettings.displayNoUpdates">
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <br>
+                    <br>
+                    <span style="display:block; text-indent: 2em">
+                        <b>Status report</b>
+                    </span>
+                    <div style="vertical-align:middle; text-indent: 3em">
+                        <input type="checkbox" class="aui-toggle-input" id="status-prod-checkbox"
+                                aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                checked="" ng-model="vm.currentStandupSettings.postProd">
+                                    Post report in #prod at
+                        <input class="input-time" type="text" value="12:30" size="7" style="text-align: center;"
+                                ui-mask="99:99" placeholder="00:00"> <!--ng-model="standup.notifications.summary.time"-->
+                        America/Chihuahua
+                    </div>
+                    <div style="vertical-align:middle; text-indent: 3em">
+                        <input type="checkbox" class="aui-toggle-input" id="status-asap-checkbox"
+                                aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                checked="" ng-model="vm.currentStandupSettings.reportASAP">
+                                    Post report as soon as everyone send status
+                        <span class="aui-icon aui-icon-small aui-iconfont-help" style="color:gray"></span>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <br>
+                    <br>
+                    <span style="display:block; text-indent: 2em">
+                        <b>Time Zone</b>
+                    </span>
+                    <div style="vertical-align:middle; text-indent: 3em">
+                        <div class="radio">
+                            <input class="radio" type="radio" checked="checked"
+                                name="radiobuttonstimezone" id="TZradioButtonOne"
+                                ng-model="vm.currentStandupSettings.sameTime">
+                            <label for="TZradioButtonOne">Same time zone for everyone</label>
+                            <span class="aui-icon aui-icon-small aui-iconfont-help" style="color:gray"></span>
+                        </div>
+                        <div class="radio">
+                            <input class="radio" type="radio"
+                                name="radiobuttonstimezone" id="TZradioButtonTwo"
+                                ng-model="vm.currentStandupSettings.PersonalizedTime">
+                            <label for="TZradioButtonTwo">Personalized time zone</label>
+                            <span class="aui-icon aui-icon-small aui-iconfont-help" style="color:gray"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <br>
+                    <br>
+                    <span style="display:block; text-indent: 2em">
+                        <b>Channel notifications</b>
+                    </span>
+                    <div style="vertical-align:middle; text-indent: 3em">
+                        <div>
+                            <input type="checkbox" class="aui-toggle-input" id="new-status-checkbox"
+                                    aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                    checked="" ng-model="vm.currentStandupSettings.newStatus">
+                                        New Status
+                        </div>
+                        <div>
+                            <span class="aui-icon aui-icon-small aui-iconfont-bp-requirements" style="color:gray"></span>
+                            <span style="color:gray; font-size: small">
+                                Also display status
+                            </span>
+                            <input type="checkbox" class="aui-toggle-input" id="new-status-display-checkbox"
+                                    aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                    checked="" ng-model="vm.currentStandupSettings.displayNewStatus">
+                        </div>
+                        <div>
+                            <input type="checkbox" class="aui-toggle-input" id="edit-status-checkbox"
+                                    aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                    checked="" ng-model="vm.currentStandupSettings.editStatus">
+                                        Edit Status
+                        </div>
+                        <div>
+                            <span class="aui-icon aui-icon-small aui-iconfont-bp-requirements" style="color:gray"></span>
+                            <span style="color:gray; font-size: small">
+                                Also display status
+                            </span>
+                            <input type="checkbox" class="aui-toggle-input" id="edit-status-display-checkbox"
+                                        aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                        checked="" ng-model="vm.currentStandupSettings.displayEditStatus">
+                        </div>
+                        <div>
+                            <input type="checkbox" class="aui-toggle-input" id="delete-status-checkbox"
+                                    aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                    checked="" ng-model="vm.currentStandupSettings.deleteStatus">
+                                        Delete Status
+                        </div>
+                        <div style="display:inline">
+                            <button class="aui-button aui-button-primary" style="float:right; margin-left: 1em;"
+                            ng-click="vm.sentStandupConfig()">Save</button>
+                            <button class="aui-button" style="float:right">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- <span class="settings-subsection">Status report</span><br>
+                    <p class="settings-subsection-body">
+                        <input type="checkbox" name="multipleTimeZone-{{ standup._id}}"
+                            ng-model="standup.notifications.summary.useFixedTime" />
+                        Post report in #{{standup.name}} at <input class="input-time" type="text"
+                            ng-model="standup.notifications.summary.time" ui-mask="99:99" placeholder="00:00">
+                        {{ standup.tz }}
+                        <br>
+                        <input type="checkbox" name="multipleTimeZone-{{ standup._id}}"
+                            ng-model="standup.notifications.summary.sendOnComplete" />
+                        Post report as soon as everyone send status <img tooltips tooltip-class="customTooltip"
+                            tooltip-template="If you defined a fixed report time but all the users sent their status before, the fixed report time will be ignored to avoid spam"
+                            class="icon" src="/img/icons/icon-question-circle-outline.svg">
+                    </p> -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="tabs-pane active-pane" id="tabs-settings">
+            <div class="standup-list">
+                <div class="standup-list-item" ng-repeat="standup in vm.standupConfigurations">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="standup-row">
+                                <span>#{{standup.name}}</span>
+                                <div class="settings-button" ng-click="standup.showSettings = !standup.showSettings">
+                                    Edit
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="standup.showSettings">
+                    </div>
+
+                </div>
+            </div>
+        </div> -->
+
 </div>

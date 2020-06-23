@@ -1,8 +1,8 @@
 {
     "local": {
-        "jwt": "LOCAL-BOT#!",
-        "api_url": "http://localhost:3000/api/",
-        "slackClientId": "263257009541.262601405345"
+        "jwt": "STAGE-BOT#!",
+        "api_url": "https://standup-bot-stage.herokuapp.com/api/",
+        "slackClientId": "2430445214.245780720839"
     },
     "stage": {
         "jwt": "STAGE-BOT#!",
