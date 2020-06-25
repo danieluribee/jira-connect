@@ -24,14 +24,12 @@
         <div class="aui-tabs horizontal-tabs" id="tabs-jira" role="application">
             <ul class="tabs-menu" role="tablist">
                 <li class="menu-item" role="presentation">
-                    <a role="tab" ng-click="vm.selectedTab = 'JIRA_CONNECTIONS'"
-                        ngStyle="{'background-color': vm.selectedTab == 'JIRA_CONNECTIONS' ? 'white' : '#e9e9e9'}">
+                    <a role="tab" ng-click="vm.setSettingsWindow('JIRA_CONNECTIONS'); vm.clickJiraConnections()" ng-style="{'background-color':vm.clickJiraConnectionsBg}">
                         Jira Connections
                     </a>
                 </li>
                 <li class="menu-item" role="presentation">
-                    <a role="tab" ng-click="vm.selectedTab = 'STANDUP_SETTINGS'"
-                        ngStyle="{'background-color': vm.selectedTab == 'STANDUP_SETTINGS' ? 'white' : '#e9e9e9'}">
+                    <a role="tab" ng-click="vm.setSettingsWindow('STANDUP_SETTINGS'); vm.clickStandUps()" ng-style="{'background-color':vm.clickStandUpsBg}">
                         Stand-up settings
                     </a>
                 </li>
@@ -106,63 +104,16 @@
             </thead>
             <tbody>
 
-                <tr>
+                <tr ng-repeat="standUpItem in vm.uniqueStandups">
                     <td style="vertical-align:middle">
-                        <span>#Sprint-Planning</span>
+                        <span>{{standUpItem.name}}</span>
                     </td>
-                    <!--#{{standup.name}}-->
                     <td>
                         <button class="aui-button" style="float:right"
-                            ng-click="vm.selectedTab = 'STANDUP_SETTINGS_EDIT'">Edit</button>
-                        <!--ng-click="standup.showSettings = !standup.showSettings"-->
+                            ng-click=" vm.updateCurrentSettings(standUpItem); vm.setSettingsWindow('STANDUP_SETTINGS_EDIT')">Edit</button>
                     </td>
                 </tr>
 
-                <tr>
-                    <td style="vertical-align:middle">
-                        <span>#Daily-Scrum</span>
-                    </td>
-                    <!--#{{standup.name}}-->
-                    <td>
-                        <button class="aui-button" style="float:right"
-                            ng-click="vm.selectedTab = 'STANDUP_SETTINGS_EDIT'">Edit</button>
-                        <!--ng-click="standup.showSettings = !standup.showSettings"-->
-                    </td>
-                </tr>
-
-                <tr>
-                    <td style="vertical-align:middle">
-                        <span>#Sprint-Retrospective</span>
-                    </td>
-                    <!--#{{standup.name}}-->
-                    <td>
-                        <button class="aui-button" style="float:right"
-                            ng-click="vm.selectedTab = 'STANDUP_SETTINGS_EDIT'">Edit</button>
-                        <!--ng-click="standup.showSettings = !standup.showSettings"-->
-                    </td>
-                </tr>
-
-                <!-- <tr ng-repeat="relation in vm.relations">
-                    <td>
-                        <select ng-model="relation.standup.platform_conversation_id" class="aui-button aui-style-default"
-                            ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
-                            <option value="0">Not configured</option>
-                            <option ng-repeat="standup in vm.uniqueStandups" value="{{standup.platform_conversation_id}}">
-                                {{ standup.name }}
-                            </option>
-                        </select>
-                    </td>
-                    <td>
-                        <select ng-model="relation.standup.jira_project_id" class="aui-button aui-style-default"
-                            ng-change="vm.removeUselessRelation($index); vm.removeDuplicatedRelations();">
-                            <option value="0">Not configured</option>
-                            <option ng-repeat="project in vm.projects"
-                                ng-disabled="vm.usedInAnotherRelation(relation, project.id)" value="{{project.id}}">
-                                {{ project.name }}
-                            </option>
-                        </select>
-                    </td>
-                </tr> -->
             </tbody>
         </table>
     </div>
@@ -178,8 +129,7 @@
                 <form class="aui top-label">
                     <fieldset class="top-label">
                         <div class="field-group top-label">
-                            <label style="display:inline;">#Sprint-Planning</label>
-                            <button class="aui-button" style="float:right; display:inline">Edit</button>
+                            <label style="display:inline;">{{vm.currentStandupSettings.standUpName}}</label>
                             <span style="display:block; text-indent: 2em"><b>Setup</b></span>
                         </div>
                     </fieldset>
@@ -187,15 +137,15 @@
                 <div class="field-group">
                     <span style="display:block; text-indent: 3em"><label style="color:gray">
                             Time of Standup:</label>
-                        16:10/America Chihuahua
+                        {{vm.currentStandupSettings.time}}/{{vm.currentStandupSettings.timeZone}}
                     </span>
                     <span style="display:block; text-indent: 3em"><label style="color:gray">
                             Scrum Master:</label>
-                        Moica Tie
+                        {{vm.currentStandupSettings.scrumMaster}}
                     </span>
                     <span style="display:block; text-indent: 3em"><label style="color:gray">
                             Periodicity:</label>
-                        Monday, Tuesday
+                        {{vm.currentStandupSettings.periodicity}}
                     </span>
                     <br>
                     <span style="display:block; text-indent: 3em">
@@ -218,19 +168,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr ng-repeat="question in vm.currentStandupSettings.questions">
                                 <td style="vertical-align:middle; text-indent: 3em">
-                                    <span>What did you accomplish since your last stand up?</span>
+                                    <span>{{ question }}</span>
+                                </td>
+                            </tr>
+                            <tr ng-if="vm.showNewQuestion">
+                                <td style="vertical-align:middle; text-indent: 3em">
+                                    <button class="aui-button-secondary" for="txtNewQuestion" ng-click="vm.addnewQuestion(vm.newQuestion)">Add</button>
+                                    <input class="text" type="text" title="New Question" id="txtNewQuestion" style="width:80%"
+                                    ng-model="vm.newQuestion">
                                 </td>
                             </tr>
                             <tr>
                                 <td style="vertical-align:middle; text-indent: 3em">
-                                    <span>What are you working on today?</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="vertical-align:middle; text-indent: 3em">
-                                    <span style="color:gray">+ Add new question</span>
+                                    <span style="color:gray" ng-click="vm.showNewQuestionWindow()">+ Add new question</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -258,16 +210,16 @@
                     </span>
                     <div style="vertical-align:middle; text-indent: 3em">
                         <input type="checkbox" class="aui-toggle-input" id="status-prod-checkbox"
-                                aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                tooltip-on="On" tooltip-off="Off" original-title=""
                                 checked="" ng-model="vm.currentStandupSettings.postProd">
                                     Post report in #prod at
-                        <input class="input-time" type="text" value="12:30" size="7" style="text-align: center;"
-                                ui-mask="99:99" placeholder="00:00"> <!--ng-model="standup.notifications.summary.time"-->
+                        <input class="input-time" type="text" size="7" style="text-align: center;"
+                                ui-mask="99:99" placeholder="00:00" ng-model="vm.currentStandupSettings.tz">
                         America/Chihuahua
                     </div>
                     <div style="vertical-align:middle; text-indent: 3em">
                         <input type="checkbox" class="aui-toggle-input" id="status-asap-checkbox"
-                                aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                tooltip-on="On" tooltip-off="Off" original-title=""
                                 checked="" ng-model="vm.currentStandupSettings.reportASAP">
                                     Post report as soon as everyone send status
                         <span class="aui-icon aui-icon-small aui-iconfont-help" style="color:gray"></span>
@@ -282,14 +234,14 @@
                     </span>
                     <div style="vertical-align:middle; text-indent: 3em">
                         <div class="radio">
-                            <input class="radio" type="radio" checked="checked"
+                            <input class="radio" type="radio" ng-checked="!vm.currentStandupSettings.PersonalizedTime"
                                 name="radiobuttonstimezone" id="TZradioButtonOne"
-                                ng-model="vm.currentStandupSettings.sameTime">
+                                ng-model="vm.currentStandupSettings.PersonalizedTime">
                             <label for="TZradioButtonOne">Same time zone for everyone</label>
                             <span class="aui-icon aui-icon-small aui-iconfont-help" style="color:gray"></span>
                         </div>
                         <div class="radio">
-                            <input class="radio" type="radio"
+                            <input class="radio" type="radio" ng-checked="vm.currentStandupSettings.PersonalizedTime"
                                 name="radiobuttonstimezone" id="TZradioButtonTwo"
                                 ng-model="vm.currentStandupSettings.PersonalizedTime">
                             <label for="TZradioButtonTwo">Personalized time zone</label>
@@ -307,7 +259,7 @@
                     <div style="vertical-align:middle; text-indent: 3em">
                         <div>
                             <input type="checkbox" class="aui-toggle-input" id="new-status-checkbox"
-                                    aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                    tooltip-on="On" tooltip-off="Off" original-title=""
                                     checked="" ng-model="vm.currentStandupSettings.newStatus">
                                         New Status
                         </div>
@@ -317,12 +269,12 @@
                                 Also display status
                             </span>
                             <input type="checkbox" class="aui-toggle-input" id="new-status-display-checkbox"
-                                    aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                    tooltip-on="On" tooltip-off="Off" original-title=""
                                     checked="" ng-model="vm.currentStandupSettings.displayNewStatus">
                         </div>
                         <div>
                             <input type="checkbox" class="aui-toggle-input" id="edit-status-checkbox"
-                                    aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                    tooltip-on="On" tooltip-off="Off" original-title=""
                                     checked="" ng-model="vm.currentStandupSettings.editStatus">
                                         Edit Status
                         </div>
@@ -332,12 +284,12 @@
                                 Also display status
                             </span>
                             <input type="checkbox" class="aui-toggle-input" id="edit-status-display-checkbox"
-                                        aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                        tooltip-on="On" tooltip-off="Off" original-title=""
                                         checked="" ng-model="vm.currentStandupSettings.displayEditStatus">
                         </div>
                         <div>
                             <input type="checkbox" class="aui-toggle-input" id="delete-status-checkbox"
-                                    aria-label="Post report in Prod" tooltip-on="On" tooltip-off="Off" original-title=""
+                                    tooltip-on="On" tooltip-off="Off" original-title=""
                                     checked="" ng-model="vm.currentStandupSettings.deleteStatus">
                                         Delete Status
                         </div>
@@ -348,45 +300,7 @@
                         </div>
                     </div>
                 </div>
-
-                    <!-- <span class="settings-subsection">Status report</span><br>
-                    <p class="settings-subsection-body">
-                        <input type="checkbox" name="multipleTimeZone-{{ standup._id}}"
-                            ng-model="standup.notifications.summary.useFixedTime" />
-                        Post report in #{{standup.name}} at <input class="input-time" type="text"
-                            ng-model="standup.notifications.summary.time" ui-mask="99:99" placeholder="00:00">
-                        {{ standup.tz }}
-                        <br>
-                        <input type="checkbox" name="multipleTimeZone-{{ standup._id}}"
-                            ng-model="standup.notifications.summary.sendOnComplete" />
-                        Post report as soon as everyone send status <img tooltips tooltip-class="customTooltip"
-                            tooltip-template="If you defined a fixed report time but all the users sent their status before, the fixed report time will be ignored to avoid spam"
-                            class="icon" src="/img/icons/icon-question-circle-outline.svg">
-                    </p> -->
-
             </div>
         </div>
     </div>
-
-    <!-- <div class="tabs-pane active-pane" id="tabs-settings">
-            <div class="standup-list">
-                <div class="standup-list-item" ng-repeat="standup in vm.standupConfigurations">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="standup-row">
-                                <span>#{{standup.name}}</span>
-                                <div class="settings-button" ng-click="standup.showSettings = !standup.showSettings">
-                                    Edit
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row" ng-show="standup.showSettings">
-                    </div>
-
-                </div>
-            </div>
-        </div> -->
-
 </div>

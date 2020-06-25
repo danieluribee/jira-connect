@@ -21,6 +21,7 @@
         vm.saved = false;
         vm.selectedTab = 'JIRA_CONNECTIONS';
         vm.currentStandupSettings = [];
+        vm.currentStandupSettings.questions = null;
         vm.currentStandupSettings.displayNoUpdates = null;
         vm.currentStandupSettings.postProd = null;
         vm.currentStandupSettings.reportASAP = null;
@@ -31,7 +32,16 @@
         vm.currentStandupSettings.editStatus = null;
         vm.currentStandupSettings.displayEditStatus = null;
         vm.currentStandupSettings.deleteStatus = null;
-
+        vm.currentStandupSettings.standUpName = null;
+        vm.currentStandupSettings.time = null;
+        vm.currentStandupSettings.timeZone = null;
+        vm.currentStandupSettings.scrumMaster = null;
+        vm.currentStandupSettings.periodicity = null;
+        vm.clickJiraConnectionsBg = "white";
+        vm.clickStandUpsBg = "#e9e9e9";
+        vm.showNewQuestion = false;
+        vm.newQuestion = "";
+        vm.currentStandupSettings.tz = null;
         vm.resourcePrefix = function () {
             return window.standbotEnvironmentLocal ? '/jira' : '';
         };
@@ -41,8 +51,14 @@
         vm.removeUselessRelation = removeUselessRelation;
         vm.removeDuplicatedRelations = removeDuplicatedRelations;
         vm.usedInAnotherRelation = usedInAnotherRelation;
-        vm.obtainStandupConfig = obtainStandupConfig;
         vm.sentStandupConfig = sentStandupConfig;
+        vm.updateCurrentSettings = updateCurrentSettings;
+        vm.setSettingsWindow = setSettingsWindow;
+        vm.clickJiraConnections = clickJiraConnections;
+        vm.clickStandUps = clickStandUps;
+        vm.showNewQuestionWindow = showNewQuestionWindow;
+        vm.addnewQuestion = addnewQuestion;
+
 
         _init();
 
@@ -235,29 +251,7 @@
             }
         }
 
-        function obtainStandupConfig() {
-            $http.get(SERVER_BASE_URL + '/slack/obtainStandupConfig').then(function (standupConfig) {
-                $log.log(standupConfig);
-                if (standupConfig) {
-                    vm.currentStandupSettings.displayNoUpdates = standupConfig.no_updates_button;
-                    vm.currentStandupSettings.postProd = standupConfig.post_in_prod;
-                    vm.currentStandupSettings.reportASAP = standupConfig.post_asap_everyone;
-                    vm.currentStandupSettings.sameTime = standupConfig.same_time_zone;
-                    vm.currentStandupSettings.PersonalizedTime = standupConfig.porsonalized_time_zone;
-                    vm.currentStandupSettings.newStatus = standupConfig.new_status;
-                    vm.currentStandupSettings.displayNewStatus = standupConfig.display_new_status;
-                    vm.currentStandupSettings.editStatus = standupConfig.edit_status;
-                    vm.currentStandupSettings.displayEditStatus = standupConfig.display_edit_status;
-                    vm.currentStandupSettings.deleteStatus = standupConfig.delete_status;
-                } else {
-                    $location.path('/');
-                }
-            });
-        }
-
         function sentStandupConfig() {
-            console.log('yesss');
-
             const questions = ["What did you accomplish since your last stand up?",
             "What are you working on today?"];
 
@@ -277,5 +271,84 @@
 
             return $http.post('http://localhost:8082/addSettings',newSettings);
         }
+
+        function updateCurrentSettings(standUpItem) {
+            console.log(standUpItem.periodicity);
+            currentCuestions = [];
+            var daysString = "";
+
+            for(var current in standUpItem.questions){
+                currentCuestions.push(standUpItem.questions[current].text);
+            }
+
+            for(var current in standUpItem.periodicity){
+                switch (parseInt(standUpItem.periodicity[current])) {
+                    case 1:
+                        daysString += " Monday"
+                      break;
+                    case 2:
+                        daysString += " Tuesday"
+                      break;
+                    case 3:
+                        daysString += " Wednesday"
+                      break;
+                    case 4:
+                        daysString += " Thursday"
+                      break;
+                    case 5:
+                        daysString += " Friday"
+                      break;
+                    case 6:
+                        daysString += " Saturday"
+                      break;
+                    case 7:
+                        daysString += " Sunday"
+                      break;
+                  }
+            }
+
+            vm.currentStandupSettings.questions = currentCuestions;
+            vm.currentStandupSettings.displayNoUpdates = standUpItem.allowNoUpdates;
+            vm.currentStandupSettings.postProd = !standUpItem.notifications.summary.sendOnComplete;
+            vm.currentStandupSettings.reportASAP = standUpItem.notifications.summary.sendOnComplete;
+            vm.currentStandupSettings.sameTime = !standUpItem.notifications.summary.useFixedTime;
+            vm.currentStandupSettings.PersonalizedTime = standUpItem.notifications.summary.useFixedTime;
+            vm.currentStandupSettings.newStatus = standUpItem.notifications.channel.sendOnNewStatus;
+            vm.currentStandupSettings.displayNewStatus = standUpItem.notifications.channel.sendNewStatusFull;
+            vm.currentStandupSettings.editStatus = standUpItem.notifications.channel.sendOnEditStatus;
+            vm.currentStandupSettings.displayEditStatus = standUpItem.notifications.channel.sendEditStatusFull;
+            vm.currentStandupSettings.deleteStatus = standUpItem.notifications.channel.sendOnDeleteStatus;
+            vm.currentStandupSettings.standUpName = standUpItem.name;
+            vm.currentStandupSettings.time = standUpItem.notifications.summary.time;
+            vm.currentStandupSettings.timeZone = standUpItem.notifications.summary.tz;
+            vm.currentStandupSettings.scrumMaster = standUpItem.scrumMasterName;
+            vm.currentStandupSettings.periodicity = daysString;
+            vm.currentStandupSettings.tz = standUpItem.notifications.summary.time;
+        }
+
+        function setSettingsWindow(settingType) {
+            vm.selectedTab = settingType;
+        }
+
+        function clickJiraConnections(){
+            vm.clickJiraConnectionsBg = "white";
+            vm.clickStandUpsBg = "#e9e9e9";
+        }
+
+        function clickStandUps(){
+            vm.clickJiraConnectionsBg = "#e9e9e9";
+            vm.clickStandUpsBg = "white";
+        }
+
+        function showNewQuestionWindow(){
+            vm.showNewQuestion = true;
+        }
+
+        function addnewQuestion(newQuestionAdd){
+            vm.currentStandupSettings.questions.push(newQuestionAdd);
+            vm.showNewQuestion = false;
+            vm.newQuestion = "";
+        }
+
     }
 })(window.angular);
