@@ -155,4 +155,14 @@ public class StandbotAPI {
                 "{\"slack_team_id\":\"" + notifyPaylod.getSlack_team_id()+ "\"}"
         );
     }
+
+    public String updateConfigSettings(String clientKey, String hostBaseUrl, String standUpId, String body){
+        String jwt = getJwt(clientKey, hostBaseUrl, "");
+
+        return makeHttpCall(
+                StandbotConfig.STANDBOT_API_BASE_URL + "jira-addon/configurations/"+standUpId+"?jwt=" + jwt,
+                "PUT",
+                body
+        );
+    }
 }

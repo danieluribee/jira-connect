@@ -37,11 +37,16 @@
         vm.currentStandupSettings.timeZone = null;
         vm.currentStandupSettings.scrumMaster = null;
         vm.currentStandupSettings.periodicity = null;
+        vm.currentStandupSettings.tz = null;
+        vm.standUpItem = null;
+        vm.currentQuestions = null;
         vm.clickJiraConnectionsBg = "white";
         vm.clickStandUpsBg = "#e9e9e9";
         vm.showNewQuestion = false;
         vm.newQuestion = "";
-        vm.currentStandupSettings.tz = null;
+        vm.spinnerConfSave = null;
+        vm.confirmationConfSave = null;
+        vm.btnSaveConfig = true;
         vm.resourcePrefix = function () {
             return window.standbotEnvironmentLocal ? '/jira' : '';
         };
@@ -58,7 +63,6 @@
         vm.clickStandUps = clickStandUps;
         vm.showNewQuestionWindow = showNewQuestionWindow;
         vm.addnewQuestion = addnewQuestion;
-
 
         _init();
 
@@ -252,78 +256,62 @@
         }
 
         function sentStandupConfig() {
-            const questions = ["What did you accomplish since your last stand up?",
-            "What are you working on today?"];
-
-            const newSettings = {
-                "standup_questions": questions,
-                "no_updates_button": vm.currentStandupSettings.displayNoUpdates,
-                "post_in_prod": vm.currentStandupSettings.postProd,
-                "post_asap_everyone": vm.currentStandupSettings.reportASAP,
-                "same_time_zone": vm.currentStandupSettings.sameTime,
-                "porsonalized_time_zone": vm.currentStandupSettings.PersonalizedTime,
-                "new_status": vm.currentStandupSettings.newStatus,
-                "display_new_status": vm.currentStandupSettings.displayNewStatus,
-                "edit_status": vm.currentStandupSettings.editStatus,
-                "display_edit_status": vm.currentStandupSettings.displayEditStatus,
-                "delete_status": vm.currentStandupSettings.deleteStatus
+            var updateQuestions = [];
+            for(var current in vm.currentQuestions){
+                updateQuestions.push(
+                {
+                    "type": "text",
+                    "text": vm.currentQuestions[current]
+                  })
             };
 
-            return $http.post('http://localhost:8082/addSettings',newSettings);
+            vm.standUpItem.questions = updateQuestions;
+            vm.standUpItem.allowNoUpdates = vm.currentStandupSettings.displayNoUpdates;
+            vm.standUpItem.notifications.summary.sendOnComplete = vm.currentStandupSettings.reportASAP;
+            vm.standUpItem.notifications.summary.useFixedTime = vm.currentStandupSettings.PersonalizedTime;
+            vm.standUpItem.notifications.channel.sendOnNewStatus = vm.currentStandupSettings.newStatus;
+            vm.standUpItem.notifications.channel.sendNewStatusFull = vm.currentStandupSettings.displayNewStatus;
+            vm.standUpItem.notifications.channel.sendOnEditStatus = vm.currentStandupSettings.editStatus;
+            vm.standUpItem.notifications.channel.sendEditStatusFull = vm.currentStandupSettings.displayEditStatus;
+            vm.standUpItem.notifications.channel.sendOnDeleteStatus = vm.currentStandupSettings.deleteStatus;
+            vm.standUpItem.notifications.summary.time = vm.currentStandupSettings.time;
+            vm.standUpItem.notifications.summary.tz = vm.currentStandupSettings.timeZone;
+            vm.standUpItem.scrumMasterName = vm.currentStandupSettings.scrumMaster;
+
+            $http.put(SERVER_BASE_URL + '/jira-addon/configurations/' + vm.standUpItem.platform._id, JSON.parse(JSON.stringify(vm.standUpItem)))
+            .then(function successCallback(response) {
+                callSpinner();
+            }, function errorCallback(response) {
+                vm.erroConfSave = true;
+                setTimeout(vm.erroConfSave = false, 2000);
+                vm.btnSaveConfig = true;
+            });
         }
 
         function updateCurrentSettings(standUpItem) {
-            console.log(standUpItem.periodicity);
-            currentCuestions = [];
-            var daysString = "";
+            vm.standUpItem = standUpItem;
+            vm.currentQuestions = [];
 
-            for(var current in standUpItem.questions){
-                currentCuestions.push(standUpItem.questions[current].text);
+            for(var current in vm.standUpItem.questions){
+                vm.currentQuestions.push(vm.standUpItem.questions[current].text);
             }
 
-            for(var current in standUpItem.periodicity){
-                switch (parseInt(standUpItem.periodicity[current])) {
-                    case 1:
-                        daysString += " Monday"
-                      break;
-                    case 2:
-                        daysString += " Tuesday"
-                      break;
-                    case 3:
-                        daysString += " Wednesday"
-                      break;
-                    case 4:
-                        daysString += " Thursday"
-                      break;
-                    case 5:
-                        daysString += " Friday"
-                      break;
-                    case 6:
-                        daysString += " Saturday"
-                      break;
-                    case 7:
-                        daysString += " Sunday"
-                      break;
-                  }
-            }
-
-            vm.currentStandupSettings.questions = currentCuestions;
-            vm.currentStandupSettings.displayNoUpdates = standUpItem.allowNoUpdates;
-            vm.currentStandupSettings.postProd = !standUpItem.notifications.summary.sendOnComplete;
-            vm.currentStandupSettings.reportASAP = standUpItem.notifications.summary.sendOnComplete;
-            vm.currentStandupSettings.sameTime = !standUpItem.notifications.summary.useFixedTime;
-            vm.currentStandupSettings.PersonalizedTime = standUpItem.notifications.summary.useFixedTime;
-            vm.currentStandupSettings.newStatus = standUpItem.notifications.channel.sendOnNewStatus;
-            vm.currentStandupSettings.displayNewStatus = standUpItem.notifications.channel.sendNewStatusFull;
-            vm.currentStandupSettings.editStatus = standUpItem.notifications.channel.sendOnEditStatus;
-            vm.currentStandupSettings.displayEditStatus = standUpItem.notifications.channel.sendEditStatusFull;
-            vm.currentStandupSettings.deleteStatus = standUpItem.notifications.channel.sendOnDeleteStatus;
-            vm.currentStandupSettings.standUpName = standUpItem.name;
-            vm.currentStandupSettings.time = standUpItem.notifications.summary.time;
-            vm.currentStandupSettings.timeZone = standUpItem.notifications.summary.tz;
-            vm.currentStandupSettings.scrumMaster = standUpItem.scrumMasterName;
-            vm.currentStandupSettings.periodicity = daysString;
-            vm.currentStandupSettings.tz = standUpItem.notifications.summary.time;
+            vm.currentStandupSettings.questions = vm.currentQuestions;
+            vm.currentStandupSettings.displayNoUpdates = vm.standUpItem.allowNoUpdates;
+            vm.currentStandupSettings.postProd = !vm.standUpItem.notifications.summary.sendOnComplete;
+            vm.currentStandupSettings.reportASAP = vm.standUpItem.notifications.summary.sendOnComplete;
+            vm.currentStandupSettings.sameTime = !vm.standUpItem.notifications.summary.useFixedTime;
+            vm.currentStandupSettings.PersonalizedTime = vm.standUpItem.notifications.summary.useFixedTime;
+            vm.currentStandupSettings.newStatus = vm.standUpItem.notifications.channel.sendOnNewStatus;
+            vm.currentStandupSettings.displayNewStatus = vm.standUpItem.notifications.channel.sendNewStatusFull;
+            vm.currentStandupSettings.editStatus = vm.standUpItem.notifications.channel.sendOnEditStatus;
+            vm.currentStandupSettings.displayEditStatus = vm.standUpItem.notifications.channel.sendEditStatusFull;
+            vm.currentStandupSettings.deleteStatus = vm.standUpItem.notifications.channel.sendOnDeleteStatus;
+            vm.currentStandupSettings.standUpName = vm.standUpItem.name;
+            vm.currentStandupSettings.time = vm.standUpItem.notifications.summary.time;
+            vm.currentStandupSettings.timeZone = vm.standUpItem.notifications.summary.tz;
+            vm.currentStandupSettings.scrumMaster = vm.standUpItem.scrumMasterName;
+            vm.currentStandupSettings.periodicity = vm.PersonalizedTime;
         }
 
         function setSettingsWindow(settingType) {
@@ -350,5 +338,14 @@
             vm.newQuestion = "";
         }
 
+        function callSpinner(){
+            vm.btnSaveConfig = false;
+            vm.spinnerConfSave = true;
+            setTimeout(vm.spinnerConfSave = false, 2000);
+            vm.confirmationConfSave = true;
+            setTimeout(vm.confirmationConfSave = false, 2000);
+            setTimeout(vm.btnSaveConfig = true, 2000);
+            setSettingsWindow('STANDUP_SETTINGS');
+        }
     }
 })(window.angular);

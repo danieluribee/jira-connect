@@ -357,4 +357,19 @@ public class StandbotController {
         SlackIntegration slackIntegration = SlackIntegrationMapper.map(slackIntegrationEntity);
         return Response.ok(GSON.toJson(slackIntegration)).build();
     }
+
+    @PUT
+    @Path("jira-addon/configurations/{Id}")
+    public Response updateConfigSettings(@PathParam("Id") String Id, @QueryParam("hostBaseUrl") String hostBaseUrl, String payload){
+        SlackIntegrationEntity slackIntegrationEntity = _slackIntegrationService.getSlackIntegration();
+
+        if (slackIntegrationEntity == null) {
+            return Response.status(404).build();
+        }
+
+        SlackIntegration slackIntegration = SlackIntegrationMapper.map(slackIntegrationEntity);
+
+        Object response = _standbotAPI.updateConfigSettings(slackIntegration.getClientKey(), hostBaseUrl, Id, payload);
+        return Response.ok(response).build();
+    }
 }

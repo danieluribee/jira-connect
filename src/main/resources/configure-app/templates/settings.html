@@ -24,12 +24,14 @@
         <div class="aui-tabs horizontal-tabs" id="tabs-jira" role="application">
             <ul class="tabs-menu" role="tablist">
                 <li class="menu-item" role="presentation">
-                    <a role="tab" ng-click="vm.setSettingsWindow('JIRA_CONNECTIONS'); vm.clickJiraConnections()" ng-style="{'background-color':vm.clickJiraConnectionsBg}">
+                    <a role="tab" ng-click="vm.setSettingsWindow('JIRA_CONNECTIONS'); vm.clickJiraConnections()"
+                    ng-style="{'background-color':vm.clickJiraConnectionsBg}">
                         Jira Connections
                     </a>
                 </li>
                 <li class="menu-item" role="presentation">
-                    <a role="tab" ng-click="vm.setSettingsWindow('STANDUP_SETTINGS'); vm.clickStandUps()" ng-style="{'background-color':vm.clickStandUpsBg}">
+                    <a role="tab" ng-click="vm.setSettingsWindow('STANDUP_SETTINGS'); vm.clickStandUps()" 
+                    ng-style="{'background-color':vm.clickStandUpsBg}">
                         Stand-up settings
                     </a>
                 </li>
@@ -234,14 +236,13 @@
                     </span>
                     <div style="vertical-align:middle; text-indent: 3em">
                         <div class="radio">
-                            <input class="radio" type="radio" ng-checked="!vm.currentStandupSettings.PersonalizedTime"
-                                name="radiobuttonstimezone" id="TZradioButtonOne"
-                                ng-model="vm.currentStandupSettings.PersonalizedTime">
+                            <input class="radio" type="radio"
+                                name="radiobuttonstimezone" id="TZradioButtonOne">
                             <label for="TZradioButtonOne">Same time zone for everyone</label>
                             <span class="aui-icon aui-icon-small aui-iconfont-help" style="color:gray"></span>
                         </div>
                         <div class="radio">
-                            <input class="radio" type="radio" ng-checked="vm.currentStandupSettings.PersonalizedTime"
+                            <input class="radio" type="radio"
                                 name="radiobuttonstimezone" id="TZradioButtonTwo"
                                 ng-model="vm.currentStandupSettings.PersonalizedTime">
                             <label for="TZradioButtonTwo">Personalized time zone</label>
@@ -294,9 +295,13 @@
                                         Delete Status
                         </div>
                         <div style="display:inline">
-                            <button class="aui-button aui-button-primary" style="float:right; margin-left: 1em;"
-                            ng-click="vm.sentStandupConfig()">Save</button>
-                            <button class="aui-button" style="float:right">Cancel</button>
+                            <div ng-if="vm.spinnerConfSave"><aui-spinner size="big" style="float:right; margin-left: 1em;"></aui-spinner></div>
+                            <div ng-if="vm.spinnerConfSave" ><span class="aui-icon aui-icon-big aui-iconfont-check"
+                            style="float:right; margin-left: 1em;"></div>
+                            Done</span>
+                            <div ng-if="vm.btnSaveConfig"><button class="aui-button aui-button-primary" style="float:right; margin-left: 1em;"
+                            ng-click="vm.sentStandupConfig()">Save</button></div>
+                            <button class="aui-button" style="float:right" ng-click="vm.setSettingsWindow('STANDUP_SETTINGS')">Cancel</button>
                         </div>
                     </div>
                 </div>
